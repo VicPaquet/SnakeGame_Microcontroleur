@@ -7,6 +7,9 @@
   * @defgroup ELE3312
   * @{
   */
+
+//test
+
 #ifndef INC_GRAPHICS_H_
 #define INC_GRAPHICS_H_
 
