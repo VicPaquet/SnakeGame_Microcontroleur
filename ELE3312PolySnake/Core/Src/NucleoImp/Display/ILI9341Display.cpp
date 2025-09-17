@@ -153,6 +153,19 @@ void ILI9341Display::drawCircle(Color color, uint16_t x, uint16_t y, uint16_t r)
 	ili9341_draw_circle(lcd_, ELE3312::colorToILI9341Color(color), x, y, r);
 }
 
+void ILI9341Display::drawCheckerboard(uint16_t tileSize) {
+    for (int row = 0; row < 24; row++) {
+        for (int col = 0; col < 32; col++) {
+            Color c = ((row + col) % 2 == 0) ? Color::WHITE : Color::LIGHTGREY;
+
+            ELE3312::Point<uint16_t> topLeft(col * tileSize, row * tileSize);
+            ELE3312::Rect<uint16_t> r(topLeft, tileSize, tileSize);
+
+            fillRect(c, r);
+        }
+    }
+}
+
 /** @brief Draws a filled circle on the screen.
  * @details The function draws a colored filled circle on the screen.
  * The circle is positioned at the specified x and y coordinates and
@@ -201,6 +214,58 @@ void ILI9341Display::drawString(uint16_t x, uint16_t y, const std::string text, 
 		ptext_attr_->fg_color = ELE3312::colorToILI9341Color(color);
 	}
 	ili9341_draw_string(lcd_, *ptext_attr_, const_cast<char*>(text.c_str()));
+}
+
+void ILI9341Display::drawApple(uint16_t x, uint16_t y){
+	 uint8_t apple[10][10] = {
+	        {0,0,0,1,1,1,1,0,0,0},
+	        {0,0,1,1,1,1,1,1,0,0},
+	        {0,1,1,1,1,1,1,1,1,0},
+	        {1,1,1,1,1,1,1,1,1,1},
+	        {1,1,1,1,1,1,1,1,1,1},
+	        {0,1,1,1,1,1,1,1,1,0},
+	        {0,0,1,1,1,1,1,1,0,0},
+	        {0,0,0,1,1,1,1,0,0,0},
+	        {0,0,0,0,2,2,0,0,0,0}, // petite feuille en haut
+	        {0,0,0,0,2,0,0,0,0,0}  // tige
+	    };
+
+	    for (int row = 0; row < 10; row++) {
+	        for (int col = 0; col < 10; col++) {
+	            uint8_t val = apple[row][col];
+	            if (val == 1) {
+	                drawPixel(Color::RED,     x + col, y + row);
+	            } else if (val == 2) {
+	                drawPixel(Color::GREEN,   x + col, y + row);
+	            }
+	        }
+	    }
+}
+
+void ILI9341Display::drawCherry(uint16_t x, uint16_t y) {
+    uint8_t cherry[10][10] = {
+        {0,0,0,0,2,0,0,0,0,0},
+        {0,0,0,2,0,2,0,0,0,0},
+        {0,0,2,0,0,0,2,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0},
+        {0,0,1,1,0,0,1,1,0,0},
+        {0,1,1,1,1,1,1,1,1,0},
+        {0,1,1,1,1,1,1,1,1,0},
+        {0,0,1,1,1,1,1,1,0,0},
+        {0,0,0,1,1,1,1,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0}
+    };
+
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            uint8_t val = cherry[row][col];
+            if (val == 1) {
+                drawPixel(Color::RED,   x + col, y + row);
+            } else if (val == 2) {
+                drawPixel(Color::GREEN, x + col, y + row);
+            }
+        }
+    }
 }
 
 /** @brief Draws a bitmap graphic on the screen.

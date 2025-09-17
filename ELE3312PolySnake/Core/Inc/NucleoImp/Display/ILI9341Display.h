@@ -118,6 +118,11 @@ namespace ELE3312 {
 
 			void drawBitmap(uint16_t *data, uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
 
+			void drawApple(uint16_t x, uint16_t y);
+
+			void drawCherry(uint16_t x, uint16_t y);
+
+			void drawCheckerboard(uint16_t tileSize);
 
 			uint16_t getScreenWidth() const override;
 

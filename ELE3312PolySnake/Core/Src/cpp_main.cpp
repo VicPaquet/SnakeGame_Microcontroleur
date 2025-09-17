@@ -227,14 +227,13 @@ void draw_tile(int x, int y, TileType tile_id) {
             color = Color::DARKGREEN;
             break;
         case TILE_APPLE:
-            color = Color::RED;
-            break;
+        	display.drawApple(pixel_x + 1,  pixel_y + 1);
+            return;
         case TILE_CHERRY:
-            color = Color::MAGENTA;
-            break;
+            display.drawCherry(pixel_x + 1,  pixel_y + 1);
+            return;
         default:
-            color = Color::WHITE;
-            break;
+            return;
     }
     
     // Dessiner la tuile avec un petit contour
@@ -251,7 +250,7 @@ void draw_tile(int x, int y, TileType tile_id) {
  */
 void draw_game_board() {
     // Effacer l'écran
-    display.fillScreen(Color::BLACK);
+    display.drawCheckerboard(TILE_SIZE);
     
     // Dessiner la tête du serpent
     if (game.head != nullptr) {
@@ -269,17 +268,6 @@ void draw_game_board() {
     for (int i = 0; i < game.fruit_count; i++) {
         draw_tile(game.fruits[i].x, game.fruits[i].y, game.fruits[i].id);
     }
-    
-    // Afficher le score
-    char score_text[50];
-    sprintf(score_text, "Score: %d", game.score);
-    display.drawString(10, 10, score_text, Color::WHITE);
-    
-    // Afficher les informations du jeu
-    int total_snake_length = (game.body != nullptr) ? 1 + game.body->size() : 0;
-    char info_text[50];
-    sprintf(info_text, "Serpent: %d, Fruits: %d", total_snake_length, game.fruit_count);
-    display.drawString(10, 25, info_text, Color::CYAN);
 }
 
 /**
@@ -317,35 +305,6 @@ void cpp_main(peripheral_handles *handles) {
     
     // Afficher le plateau de jeu initial
     draw_game_board();
-    
-    // Boucle principale de démonstration
-    uint32_t last_update = 0;
-    int demo_step = 0;
-    
-    while(1) {
-        uint32_t current_time = HAL_GetTick();
-        
-        // Mise à jour toutes les 3 secondes pour la démonstration
-        if (current_time - last_update > 3000) {
-            last_update = current_time;
-            
-            // Effacer et regénérer le jeu pour la démonstration
-            init_game();
-            draw_game_board();
-            
-            demo_step++;
-            
-            // Afficher un message de démonstration
-            char demo_text[50];
-            sprintf(demo_text, "Demo - Etape %d", demo_step);
-            display.drawString(10, 40, demo_text, Color::YELLOW);
-            
-            // Afficher les types de fruits
-            display.drawString(10, 55, "Pommes (rouge), Cerises (magenta)", Color::WHITE);
-        }
-        
-            HAL_Delay(100);
-    }
 }
 
 /**
