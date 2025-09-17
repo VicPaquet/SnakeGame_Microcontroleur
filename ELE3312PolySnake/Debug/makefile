@@ -86,8 +86,8 @@ all: main-build
 main-build: PolySnake.elf secondary-outputs
 
 # Tool invocations
-PolySnake.elf PolySnake.map: $(OBJS) $(USER_OBJS) C:\Users\vicpa\OneDrive\ -\ polymtl.ca\Bureau\MicroControlleur\SnakeGame_Microcontroleur\ELE3312PolySnake\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "PolySnake.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\vicpa\OneDrive - polymtl.ca\Bureau\MicroControlleur\SnakeGame_Microcontroleur\ELE3312PolySnake\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PolySnake.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+PolySnake.elf PolySnake.map: $(OBJS) $(USER_OBJS) C:\Users\hugod\git_micro_elec\SnakeGame_Microcontroleur\ELE3312PolySnake\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "PolySnake.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\hugod\git_micro_elec\SnakeGame_Microcontroleur\ELE3312PolySnake\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PolySnake.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

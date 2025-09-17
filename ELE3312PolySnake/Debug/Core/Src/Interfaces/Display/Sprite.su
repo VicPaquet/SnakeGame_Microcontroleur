@@ -1,0 +1,13 @@
+../Core/Src/Interfaces/Display/Sprite.cpp:24:1:ELE3312::Sprite::Sprite(uint16_t, uint16_t, ELE3312::SpriteType, uint16_t*)	24	static
+../Core/Src/Interfaces/Display/Sprite.cpp:32:1:ELE3312::Sprite::Sprite(const ELE3312::Sprite&)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:41:10:ELE3312::Sprite& ELE3312::Sprite::operator=(const ELE3312::Sprite&)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:53:1:ELE3312::Sprite::~Sprite()	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:53:1:virtual ELE3312::Sprite::~Sprite()	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:60:6:void ELE3312::Sprite::setWidth(uint16_t)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:67:6:void ELE3312::Sprite::setHeight(uint16_t)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:74:6:void ELE3312::Sprite::setType(ELE3312::SpriteType)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:81:6:void ELE3312::Sprite::setData(uint16_t*)	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:91:10:uint16_t ELE3312::Sprite::getWidth() const	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:98:10:uint16_t ELE3312::Sprite::getHeight() const	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:105:11:uint16_t* ELE3312::Sprite::getData() const	16	static
+../Core/Src/Interfaces/Display/Sprite.cpp:112:12:ELE3312::SpriteType ELE3312::Sprite::getType() const	16	static

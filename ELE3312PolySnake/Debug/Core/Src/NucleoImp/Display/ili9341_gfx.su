@@ -1,0 +1,17 @@
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:60:21:ili9341_rgb_wheel	24	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:87:17:ili9341_color_wheel	24	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:93:6:ili9341_spi_tft_set_address_rect	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:114:6:ili9341_transmit_wait	16	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:123:6:ili9341_transmit_color	24	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:135:6:ili9341_draw_pixel	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:154:6:ili9341_draw_line	64	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:224:6:ili9341_draw_rect	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:233:6:ili9341_fill_rect	64	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:272:6:ili9341_draw_circle	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:309:6:ili9341_fill_circle	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:316:6:ili9341_fill_screen	24	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:322:6:ili9341_draw_bitmap_1b	56	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:369:6:ili9341_draw_char	88	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:424:6:ili9341_draw_string	40	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:459:23:ili9341_clip_rect	24	static
+../Core/Src/NucleoImp/Display/ili9341_gfx.c:504:13:ili9341_fill_quarter_circle	56	static

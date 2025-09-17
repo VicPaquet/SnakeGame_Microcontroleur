@@ -1,0 +1,43 @@
+../Core/Inc/NucleoImp/Display/ILI9341Display.h:29:28:constexpr ili9341_color_t ELE3312::colorToILI9341Color(Color)	16	static
+../Core/Inc/Interfaces/Display/Display.h:54:8:constexpr ELE3312::Display::Display()	16	static
+../Core/Inc/Interfaces/Display/Display.h:59:11:ELE3312::Display::~Display()	16	static
+../Core/Inc/Interfaces/Display/Display.h:59:11:virtual ELE3312::Display::~Display()	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:17:1:ELE3312::ILI9341Display::ILI9341Display()	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:23:1:ELE3312::ILI9341Display::~ILI9341Display()	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:23:1:virtual ELE3312::ILI9341Display::~ILI9341Display()	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:32:7:void ELE3312::ILI9341Display::setup(SPI_HandleTypeDef*)	56	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:49:6:virtual void ELE3312::ILI9341Display::clearScreen()	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:59:6:virtual void ELE3312::ILI9341Display::fillScreen(ELE3312::Color)	24	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:71:6:virtual void ELE3312::ILI9341Display::drawPixel(ELE3312::Color, uint16_t, uint16_t)	32	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:85:6:virtual void ELE3312::ILI9341Display::drawLine(ELE3312::Color, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:99:6:virtual void ELE3312::ILI9341Display::drawRect(ELE3312::Color, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:110:6:virtual void ELE3312::ILI9341Display::drawRect(ELE3312::Color, const ELE3312::Rect<short unsigned int>&)	48	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:125:6:virtual void ELE3312::ILI9341Display::fillRect(ELE3312::Color, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:138:6:virtual void ELE3312::ILI9341Display::fillRect(ELE3312::Color, const ELE3312::Rect<short unsigned int>&)	48	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:152:6:virtual void ELE3312::ILI9341Display::drawCircle(ELE3312::Color, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:156:6:void ELE3312::ILI9341Display::drawCheckerboard(uint16_t)	48	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:178:6:virtual void ELE3312::ILI9341Display::fillCircle(ELE3312::Color, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:189:6:virtual void ELE3312::ILI9341Display::drawChar(uint16_t, uint16_t, char)	32	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:208:6:virtual void ELE3312::ILI9341Display::drawString(uint16_t, uint16_t, std::string, ELE3312::Color)	40	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:219:6:void ELE3312::ILI9341Display::drawApple(uint16_t, uint16_t)	136	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:245:6:void ELE3312::ILI9341Display::drawCherry(uint16_t, uint16_t)	136	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:283:6:virtual void ELE3312::ILI9341Display::drawBitmap(uint16_t*, uint16_t, uint16_t, uint16_t, uint16_t)	48	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:302:6:void ELE3312::ILI9341Display::writeFillArcHelper(int16_t, uint16_t, uint16_t, uint16_t, float, float, uint16_t)	136	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:409:6:virtual void ELE3312::ILI9341Display::fillArc(uint16_t, uint16_t, uint16_t, uint16_t, float, float, ELE3312::Color)	64	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:449:17:virtual uint16_t ELE3312::ILI9341Display::getScreenWidth() const	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:456:17:virtual uint16_t ELE3312::ILI9341Display::getScreenHeight() const	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:463:6:virtual void ELE3312::ILI9341Display::setBackgroundColor(ELE3312::Color)	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:473:14:virtual ELE3312::Color ELE3312::ILI9341Display::getBackgroundColor() const	16	static
+../Core/Src/NucleoImp/Display/ILI9341Display.cpp:488:6:virtual void ELE3312::ILI9341Display::readMemory(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t*)	64	static
+../Core/Inc/Interfaces/Geometry/Rect.h:42:4:T ELE3312::Rect<T>::getX1() const [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Rect.h:50:4:T ELE3312::Rect<T>::getY1() const [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Rect.h:34:4:T ELE3312::Rect<T>::getWidth() const [with T = short unsigned int]	24	static
+../Core/Inc/Interfaces/Geometry/Rect.h:38:4:T ELE3312::Rect<T>::getHeight() const [with T = short unsigned int]	24	static
+../Core/Inc/Interfaces/Geometry/Point.h:29:2:ELE3312::Point<T>::Point(T, T) [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Point.h:38:2:ELE3312::Point<T>::~Point() [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Rect.h:26:2:ELE3312::Rect<T>::Rect(const ELE3312::Point<O>&, T, T) [with T = short unsigned int]	32	static
+../Core/Inc/Interfaces/Geometry/Rect.h:32:10:ELE3312::Rect<T>::~Rect() [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Rect.h:32:10:ELE3312::Rect<T>::~Rect() [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Point.h:75:4:T ELE3312::Point<T>::getX() const [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Point.h:82:4:T ELE3312::Point<T>::getY() const [with T = short unsigned int]	16	static
+../Core/Inc/Interfaces/Geometry/Point.h:34:2:ELE3312::Point<T>::Point(const ELE3312::Point<T>&) [with T = short unsigned int]	16	static
