@@ -217,18 +217,18 @@ void ILI9341Display::drawString(uint16_t x, uint16_t y, const std::string text, 
 }
 
 void ILI9341Display::drawApple(uint16_t x, uint16_t y){
-	 uint8_t apple[10][10] = {
-	        {0,0,0,1,1,1,1,0,0,0},
-	        {0,0,1,1,1,1,1,1,0,0},
-	        {0,1,1,1,1,1,1,1,1,0},
-	        {1,1,1,1,1,1,1,1,1,1},
-	        {1,1,1,1,1,1,1,1,1,1},
-	        {0,1,1,1,1,1,1,1,1,0},
-	        {0,0,1,1,1,1,1,1,0,0},
-	        {0,0,0,1,1,1,1,0,0,0},
-	        {0,0,0,0,2,2,0,0,0,0}, // petite feuille en haut
-	        {0,0,0,0,2,0,0,0,0,0}  // tige
-	    };
+	uint8_t apple[10][10] = {
+	    {0,0,0,0,2,0,0,0,0,0},
+	    {0,0,0,0,2,2,0,0,0,0},  // feuille + tige en haut, centrée
+	    {0,0,0,1,1,1,1,0,0,0},
+	    {0,0,1,1,1,1,1,1,0,0},
+	    {0,1,1,1,1,1,1,1,1,0},
+	    {1,1,1,1,1,1,1,1,1,1},
+	    {1,1,1,1,1,1,1,1,1,1},
+	    {0,1,1,1,1,1,1,1,1,0},
+	    {0,0,1,1,1,1,1,1,0,0},
+	    {0,0,0,1,1,1,1,0,0,0}
+	};
 
 	    for (int row = 0; row < 10; row++) {
 	        for (int col = 0; col < 10; col++) {
@@ -236,7 +236,7 @@ void ILI9341Display::drawApple(uint16_t x, uint16_t y){
 	            if (val == 1) {
 	                drawPixel(Color::RED,     x + col, y + row);
 	            } else if (val == 2) {
-	                drawPixel(Color::GREEN,   x + col, y + row);
+	                drawPixel(Color::BLACK,   x + col, y + row);
 	            }
 	        }
 	    }
@@ -260,9 +260,9 @@ void ILI9341Display::drawCherry(uint16_t x, uint16_t y) {
         for (int col = 0; col < 10; col++) {
             uint8_t val = cherry[row][col];
             if (val == 1) {
-                drawPixel(Color::RED,   x + col, y + row);
+                drawPixel(Color::PURPLE,   x + col, y + row);
             } else if (val == 2) {
-                drawPixel(Color::GREEN, x + col, y + row);
+                drawPixel(Color::DARKGREEN, x + col, y + row);
             }
         }
     }

@@ -1,28 +1,28 @@
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/new:174:33:void* operator new(std::size_t, void*)	16	static
-../Core/Src/cpp_main.cpp:65:13:bool in_bounds(int, int)	16	static
-../Core/Src/cpp_main.cpp:73:13:void clear_occupancy()	16	static
-../Core/Src/cpp_main.cpp:114:15:Scan_serpent()::<lambda(int, int, int, int&, int&)>	24	static
-../Core/Src/cpp_main.cpp:125:15:Scan_serpent()::<lambda(int, int, int, int)>	24	static
-../Core/Src/cpp_main.cpp:175:44:Scan_serpent()::<lambda(int, int)>	32	static
-../Core/Src/cpp_main.cpp:96:6:void Scan_serpent()	144	static
-../Core/Src/cpp_main.cpp:203:13:void draw_edge_top(ELE3312::Color, int, int)	32	static
-../Core/Src/cpp_main.cpp:204:13:void draw_edge_right(ELE3312::Color, int, int)	32	static
-../Core/Src/cpp_main.cpp:205:13:void draw_edge_bottom(ELE3312::Color, int, int)	32	static
-../Core/Src/cpp_main.cpp:206:13:void draw_edge_left(ELE3312::Color, int, int)	32	static
-../Core/Src/cpp_main.cpp:213:25:Visualisation_serpent()::<lambda(const tile&, ELE3312::Color, ELE3312::Color)>	40	static
-../Core/Src/cpp_main.cpp:210:6:void Visualisation_serpent()	32	static
-../Core/Src/cpp_main.cpp:244:5:int random_range(int, int)	16	static
-../Core/Src/cpp_main.cpp:251:6:bool is_position_free(int, int)	40	static
+../Core/Src/cpp_main.cpp:67:13:bool in_bounds(int, int)	16	static
+../Core/Src/cpp_main.cpp:75:13:void clear_occupancy()	16	static
+../Core/Src/cpp_main.cpp:116:15:Scan_serpent()::<lambda(int, int, int, int&, int&)>	24	static
+../Core/Src/cpp_main.cpp:127:15:Scan_serpent()::<lambda(int, int, int, int)>	24	static
+../Core/Src/cpp_main.cpp:177:44:Scan_serpent()::<lambda(int, int)>	32	static
+../Core/Src/cpp_main.cpp:98:6:void Scan_serpent()	144	static
+../Core/Src/cpp_main.cpp:205:13:void draw_edge_top(ELE3312::Color, int, int)	32	static
+../Core/Src/cpp_main.cpp:206:13:void draw_edge_right(ELE3312::Color, int, int)	32	static
+../Core/Src/cpp_main.cpp:207:13:void draw_edge_bottom(ELE3312::Color, int, int)	32	static
+../Core/Src/cpp_main.cpp:208:13:void draw_edge_left(ELE3312::Color, int, int)	32	static
+../Core/Src/cpp_main.cpp:215:25:Visualisation_serpent()::<lambda(const tile&, ELE3312::Color, ELE3312::Color)>	40	static
+../Core/Src/cpp_main.cpp:212:6:void Visualisation_serpent()	32	static
+../Core/Src/cpp_main.cpp:246:5:int random_range(int, int)	16	static
+../Core/Src/cpp_main.cpp:253:6:bool is_position_free(int, int)	40	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:133:14:std::_Vector_base<tile, std::allocator<tile> >::_Vector_impl::~_Vector_impl()	24	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:315:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base() [with _Tp = tile; _Alloc = std::allocator<tile>]	16	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:531:7:std::vector<_Tp, _Alloc>::vector() [with _Tp = tile; _Alloc = std::allocator<tile>]	16	static
-../Core/Src/cpp_main.cpp:280:6:void init_snake()	80	static
-../Core/Src/cpp_main.cpp:376:6:void generate_fruits()	24	static
-../Core/Src/cpp_main.cpp:397:6:void draw_tile(int, int, TileType)	48	static
-../Core/Src/cpp_main.cpp:434:6:void draw_game_board_static()	16	static
-../Core/Src/cpp_main.cpp:446:6:void init_game()	8	static
-../Core/Src/cpp_main.cpp:464:6:void cpp_main(peripheral_handles*)	56	static
-../Core/Src/cpp_main.cpp:484:6:void cleanup_game()	16	static
+../Core/Src/cpp_main.cpp:282:6:void init_snake()	80	static
+../Core/Src/cpp_main.cpp:365:6:void generate_fruits()	24	static
+../Core/Src/cpp_main.cpp:386:6:void draw_tile(int, int, TileType)	48	static
+../Core/Src/cpp_main.cpp:423:6:void draw_game_board_static()	16	static
+../Core/Src/cpp_main.cpp:435:6:void init_game()	8	static
+../Core/Src/cpp_main.cpp:453:6:void cpp_main(peripheral_handles*)	56	static
+../Core/Src/cpp_main.cpp:473:6:void cleanup_game()	16	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:992:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = tile; _Alloc = std::allocator<tile>]	16	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:873:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::begin() [with _Tp = tile; _Alloc = std::allocator<tile>]	24	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_vector.h:893:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::end() [with _Tp = tile; _Alloc = std::allocator<tile>]	24	static
@@ -82,7 +82,7 @@ C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.external
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_algobase.h:433:2:static _Up* std::__copy_move<_IsMove, true, std::random_access_iterator_tag>::__copy_m(_Tp*, _Tp*, _Up*) [with _Tp = tile; _Up = tile; bool _IsMove = true]	32	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/stl_algobase.h:422:2:static void std::__copy_move<true, false, std::random_access_iterator_tag>::__assign_one(_Tp*, _Up*) [with _Tp = tile; _Up = tile]	24	static
 C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/move.h:97:5:constexpr typename std::remove_reference<_Tp>::type&& std::move(_Tp&&) [with _Tp = tile&]	16	static
-../Core/Src/cpp_main.cpp:494:1:void __static_initialization_and_destruction_0()	8	static
-../Core/Src/cpp_main.cpp:494:1:void __static_initialization_and_destruction_1()	8	static
-../Core/Src/cpp_main.cpp:494:1:cpp)	8	static
-../Core/Src/cpp_main.cpp:494:1:cpp)	8	static
+../Core/Src/cpp_main.cpp:483:1:void __static_initialization_and_destruction_0()	8	static
+../Core/Src/cpp_main.cpp:483:1:void __static_initialization_and_destruction_1()	8	static
+../Core/Src/cpp_main.cpp:483:1:cpp)	8	static
+../Core/Src/cpp_main.cpp:483:1:cpp)	8	static

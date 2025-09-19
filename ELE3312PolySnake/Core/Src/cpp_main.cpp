@@ -52,7 +52,9 @@ const int BOARD_WIDTH = 32;   // 32 tuiles de 10x10 = 320 pixels
 const int BOARD_HEIGHT = 24;  // 24 tuiles de 10x10 = 240 pixels
 const int TILE_SIZE = 10;     // Taille d'une tuile en pixels
 const int MAX_SNAKE_LENGTH = 101;
-const int MAX_FRUITS = 101;
+const int MAX_FRUITS = 100;
+
+const int NUMBER_OF_DIRECTION = 4; // Pour générer une direction aléatoire
 
 // -------------------------
 // Outils pour Scan_serpent()
@@ -289,9 +291,9 @@ void init_snake() {
     }
     
     // Longueur du corps entre 1 et 100 (sans compter la tête)
-    int body_length = random_range(1, 101);
+    int body_length = random_range(1, MAX_SNAKE_LENGTH);
     
-    // Position de départ aléatoire mais valide
+    // Position de départ aléatoire mais valide (au moins 5 cases des bordures)
     int start_x = random_range(5, BOARD_WIDTH - 5);
     int start_y = random_range(5, BOARD_HEIGHT - 5);
     
@@ -312,69 +314,56 @@ void init_snake() {
         tile body_part;
         
         // Générer une direction aléatoire (1-4)
-        int direction = random_range(1, 4);
+        int direction = random_range(1, NUMBER_OF_DIRECTION);
         bool position_found = false;
         int attempts = 0;
-        const int max_attempts = 10;
+        const int MAX_ATTEMPTS = 10;
         
         // Essayer de trouver une position valide
-        while (!position_found && attempts < max_attempts) {
+        while (!position_found && attempts < MAX_ATTEMPTS) {
             int new_x = current_x;
             int new_y = current_y;
             
             // Appliquer la direction
             switch (direction) {
-                case 1: // Haut
-                    new_y = current_y - 1;
-                    break;
-                case 2: // Droite
-                    new_x = current_x + 1;
-                    break;
-                case 3: // Bas
-                    new_y = current_y + 1;
-                    break;
-                case 4: // Gauche
-                    new_x = current_x - 1;
-                    break;
+                case 1: new_y = current_y - 1; break; // Haut
+                case 2: new_x = current_x + 1; break; // Droite
+                case 3: new_y = current_y + 1; break; // Bas
+                case 4: new_x = current_x - 1; break; // Gauche
             }
             
-            // Vérifier si la position est libre en utilisant la fonction existante
+            // Vérifier si la position est libre
             if (is_position_free(new_x, new_y)) {
                 body_part.x = new_x;
                 body_part.y = new_y;
                 body_part.id = TILE_SNAKE_BODY;
-                body_part.mask = 0; // initialisation du mask à 0000
+                body_part.mask = 0;
                 game.body->push_back(body_part);
                 
                 current_x = new_x;
                 current_y = new_y;
                 position_found = true;
             }
-            
-            // Si position non valide, essayer une autre direction
-            if (!position_found) {
-                direction = (direction % 4) + 1; // Cycle à travers les directions
+            else {
+                direction = (direction % NUMBER_OF_DIRECTION) + 1; // Essayer autre direction
                 attempts++;
             }
         }
         
-        // Si on n'a pas trouvé de position valide après max_attempts,
-        // placer la partie du corps à côté de la précédente de manière sécurisée
+        // Si on n’a pas trouvé de position valide, on arrête la construction du corps
         if (!position_found) {
-            body_part.x = current_x;
-            body_part.y = current_y;
-            body_part.id = TILE_SNAKE_BODY;
-            body_part.mask = 0; // initialisation du mask à 0000
-            game.body->push_back(body_part);
+            break;
         }
     }
 }
+
+
 
 /**
  * @brief Génère des fruits aléatoirement sur le plateau
  */
 void generate_fruits() {
-    game.fruit_count = random_range(1, 101); // Entre 1 et 101 fruits
+    game.fruit_count = random_range(1, MAX_FRUITS); // Entre 1 et 101 fruits
     
     for (int i = 0; i < game.fruit_count; i++) {
         int x, y;
@@ -433,7 +422,7 @@ void draw_tile(int x, int y, TileType tile_id) {
  */
 void draw_game_board_static() {
     // Effacer l'écran
-    display.drawCheckerboard(TILE_SIZE);
+    display.drawCheckerboard(TILE_SIZE); // Fonction pour créer un quadrier: méthode d'un objet display
     // Dessiner les fruits
     for (int i = 0; i < game.fruit_count; i++) {
         draw_tile(game.fruits[i].x, game.fruits[i].y, game.fruits[i].id);
@@ -467,7 +456,7 @@ void cpp_main(peripheral_handles *handles) {
     display.clearScreen();
     
     // Afficher le titre du jeu
-    display.drawString(80, 100, "PolySnake - Initialisation", Color::WHITE);
+    display.drawString(20, 100, "PolySnake - Initialisation", Color::WHITE);
     HAL_Delay(2000);
     
     init_game(); // Initialisation du jeu
