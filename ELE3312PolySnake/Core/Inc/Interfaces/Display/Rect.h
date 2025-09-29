@@ -1,6 +1,7 @@
 
-#ifndef RECT_H_
-#define RECT_H_
+
+#ifndef RECT_HPP_
+#define RECT_HPP_
 #include <cstdint>
 #include "Interfaces/Display/Point.h"
 

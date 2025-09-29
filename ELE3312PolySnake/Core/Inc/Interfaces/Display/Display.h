@@ -1,27 +1,12 @@
-/**
-  * @file Display.h
-  * @date June 2025
-  * @brief Abstract class defining the interface for the interaction with a graphical output device
-  * 
-  * This class defines methods to interact with an abstract graphical interface like an TFT or OLED screen.
-  * @defgroup ELE3312
-  * @{
-  */
-
-//test
-
 #ifndef INC_GRAPHICS_H_
 #define INC_GRAPHICS_H_
 
 #include <cstdint>
 #include <string>
-#include "Interfaces/Geometry/Rect.h"
+#include "Interfaces/Display/Rect.h"
 
 
-namespace ELE3312 {
 
-	/** @brief enum class that represents a selection of displayable colors.
-	  */
 	enum class Color {
 		BLACK,
 		NAVY,
@@ -115,7 +100,7 @@ namespace ELE3312 {
 		  * @param [in] rect A reference to a Rect object specifying the dimensions
 		  * and position of the rectangle.
 		  */
-		virtual void drawRect(Color color, const Rect<uint16_t> &rect) = 0;
+		virtual void drawRect(Color color, const Rect &rect) = 0;
 
 		/** @brief Draws a filled rectangle on the screen.
 		  * @details The function draws a rectangle on the screen that is 
@@ -139,7 +124,7 @@ namespace ELE3312 {
 		  * @param [in] rect A const reference to a Rect object that specifies the 
 		  * dimension and position of the rectangle.
 		  */
-		virtual void fillRect(Color color, const Rect<uint16_t> &rect) = 0;
+		virtual void fillRect(Color color, const Rect &rect) = 0;
 		
 		/** @brief Draws a circle on the screen.
 		  * @details The function draws a colored circle on the screen. The center of the 
@@ -248,9 +233,6 @@ namespace ELE3312 {
 		 */
 		virtual void readMemory(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t data[]) = 0;
 };
-} // End of namespace ELE3312
-/** 
-  *@}
-  */ // End of documentation group ELE3312
+
 
 #endif /* INC_GRAPHICS_H_ */

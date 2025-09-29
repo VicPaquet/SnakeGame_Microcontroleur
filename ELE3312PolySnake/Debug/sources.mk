@@ -38,6 +38,8 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/Src/Game/Graphics/GraphObjects \
+Core/Src/Game/Graphics \
 Core/Src/Interfaces/Display \
 Core/Src/NucleoImp/Display \
 Core/Src \

@@ -3,6 +3,7 @@
 
 #include "Game/Graphics/GraphObjects.h"
 #include "Interfaces/Display/Sprite.h"
+#include "Interfaces/Display/Point.h"
 #include <vector>
 #include <memory>
 
@@ -32,6 +33,8 @@ private:
 	uint16_t gridHeight; // The height in pixels
 	uint16_t gridWidth;  // The width in pixels
 	std::vector<Sprite*> checkboard; //Contains all the Sprites of the maze
+	SnakeGame* snakeGame;
+
 
 	uint16_t numHorizontalTiles() const;
 	uint16_t numVerticalTiles() const;

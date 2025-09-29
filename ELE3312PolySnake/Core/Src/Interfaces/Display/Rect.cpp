@@ -1,15 +1,5 @@
-/**
- * @file Rect.cpp
- * @date June 2025
- * @brief Representation of a rectangle.
- * 
- * @defgroup ELE3312
- * @{
- */
 #include "Interfaces/Display/Rect.h"
 #include <cstdint>
-
-using namespace ELE3312;
 
 
 /** @brief Constructor for a Rect object.
@@ -193,6 +183,4 @@ void Rect::setHeight( const uint16_t height) {
 	p2.setY( p1.getY() + height);
 }
 
-/**
- *@}
- */ // End of group ELE3312
+

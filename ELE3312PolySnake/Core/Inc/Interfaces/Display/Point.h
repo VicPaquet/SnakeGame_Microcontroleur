@@ -1,5 +1,5 @@
-#ifndef SRC_GRAPHICS_POINT_H_
-#define SRC_GRAPHICS_POINT_H_
+#ifndef SRC_GRAPHICS_POINT_HPP_
+#define SRC_GRAPHICS_POINT_HPP_
 
 #include <cstdint>
 class Point {

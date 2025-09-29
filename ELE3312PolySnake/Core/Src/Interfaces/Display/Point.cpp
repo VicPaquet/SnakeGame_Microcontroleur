@@ -1,16 +1,7 @@
-/**
- * @file Point.cpp
- * @date June 2025
- * @brief Represents a Point in two dimensional space
- * 
- * @defgroup ELE3312
- * @{
- */
 
 #include "Interfaces/Display/Point.h"
 #include <cmath>
 
-namespace ELE3312 {
 
 	/** @brief default destructor
 	*/
@@ -114,8 +105,3 @@ namespace ELE3312 {
 		return distance > 0 ? distance : -distance;
 	}
 
-} /* namespace ELE3312 */
-
-/**
- *@}
- */

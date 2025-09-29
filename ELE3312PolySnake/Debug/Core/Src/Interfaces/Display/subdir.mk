@@ -5,12 +5,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Core/Src/Interfaces/Display/Point.cpp \
+../Core/Src/Interfaces/Display/Rect.cpp \
 ../Core/Src/Interfaces/Display/Sprite.cpp 
 
 OBJS += \
+./Core/Src/Interfaces/Display/Point.o \
+./Core/Src/Interfaces/Display/Rect.o \
 ./Core/Src/Interfaces/Display/Sprite.o 
 
 CPP_DEPS += \
+./Core/Src/Interfaces/Display/Point.d \
+./Core/Src/Interfaces/Display/Rect.d \
 ./Core/Src/Interfaces/Display/Sprite.d 
 
 
@@ -21,7 +27,7 @@ Core/Src/Interfaces/Display/%.o Core/Src/Interfaces/Display/%.su Core/Src/Interf
 clean: clean-Core-2f-Src-2f-Interfaces-2f-Display
 
 clean-Core-2f-Src-2f-Interfaces-2f-Display:
-	-$(RM) ./Core/Src/Interfaces/Display/Sprite.cyclo ./Core/Src/Interfaces/Display/Sprite.d ./Core/Src/Interfaces/Display/Sprite.o ./Core/Src/Interfaces/Display/Sprite.su
+	-$(RM) ./Core/Src/Interfaces/Display/Point.cyclo ./Core/Src/Interfaces/Display/Point.d ./Core/Src/Interfaces/Display/Point.o ./Core/Src/Interfaces/Display/Point.su ./Core/Src/Interfaces/Display/Rect.cyclo ./Core/Src/Interfaces/Display/Rect.d ./Core/Src/Interfaces/Display/Rect.o ./Core/Src/Interfaces/Display/Rect.su ./Core/Src/Interfaces/Display/Sprite.cyclo ./Core/Src/Interfaces/Display/Sprite.d ./Core/Src/Interfaces/Display/Sprite.o ./Core/Src/Interfaces/Display/Sprite.su
 
 .PHONY: clean-Core-2f-Src-2f-Interfaces-2f-Display
 

@@ -10,7 +10,6 @@
  * @{
  */
 #include "Interfaces/Display/Sprite.h"
-using namespace ELE3312;
 
 /** @brief Sprite constructor
  * @details The constructor creates a sprite object that has dimensions, a type
@@ -112,7 +111,3 @@ uint16_t *Sprite::getData() const{
 SpriteType Sprite::getType() const{
 	return type;
 }
-
-/** 
- * @}
- */
