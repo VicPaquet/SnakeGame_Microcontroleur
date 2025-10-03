@@ -1,5 +1,6 @@
 "./Core/Src/Game/Graphics/GraphObjects/BodyPart.o"
 "./Core/Src/Game/Graphics/GraphObjects/Checkboard.o"
+"./Core/Src/Game/Graphics/GraphObjects/Fruit.o"
 "./Core/Src/Game/Graphics/GraphObjects/Head.o"
 "./Core/Src/Game/Graphics/GraphObjects.o"
 "./Core/Src/Interfaces/Display/Point.o"

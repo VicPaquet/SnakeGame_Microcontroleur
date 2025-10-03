@@ -107,7 +107,7 @@ void ILI9341Display::drawRect(Color color, uint16_t x, uint16_t y, uint16_t w, u
  * @param [in] rect A reference to a Rect object specifying the dimensions
  * and position of the rectangle.
  */
-void ILI9341Display::drawRect(Color color, const Rect<uint16_t> &rect) {
+void ILI9341Display::drawRect(Color color, const Rect &rect) {
 	ili9341_draw_rect(lcd_, ELE3312::colorToILI9341Color(color), rect.getX1(), rect.getY1(), 
 		   rect.getWidth(), rect.getHeight());
 }
@@ -135,7 +135,7 @@ void ILI9341Display::fillRect(Color color, uint16_t x, uint16_t y, uint16_t w, u
  * @param [in] rect A const reference to a Rect object that specifies the
  * dimension and position of the rectangle.
  */
-void ILI9341Display::fillRect(Color color, const Rect<uint16_t> &rect){
+void ILI9341Display::fillRect(Color color, const Rect &rect){
 	ili9341_fill_rect(lcd_, ELE3312::colorToILI9341Color(color),  rect.getX1(), rect.getY1(), 
 		   rect.getWidth(), rect.getHeight());
 }
@@ -158,8 +158,8 @@ void ILI9341Display::drawCheckerboard(uint16_t tileSize) {
         for (int col = 0; col < 32; col++) {
             Color c = ((row + col) % 2 == 0) ? Color::WHITE : Color::LIGHTGREY;
 
-            ELE3312::Point<uint16_t> topLeft(col * tileSize, row * tileSize);
-            ELE3312::Rect<uint16_t> r(topLeft, tileSize, tileSize);
+            Point topLeft(col * tileSize, row * tileSize);
+            Rect r(topLeft, tileSize, tileSize);
 
             fillRect(c, r);
         }

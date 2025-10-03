@@ -19,14 +19,14 @@ struct Collision {
 
 class Checkboard : public GraphObject {
 public:
-	void setup(const Rect &rect, Display *disp); //Add PlayerManager later
+	void setup(const Rect &rect, Display *disp, SnakeGame* game); //Add PlayerManager later
 	virtual ~Checkboard() = default;
 	void draw() override;
 	void clear() override;
 	void update();
 
 	//Collision checkPosition(uint16_t x, uint16_t y, Player *player, Player *opponent);
-	void removeCoin(uint16_t x, uint16_t y);
+	void removeFruit(uint16_t x, uint16_t y);
 	bool isReady();
 
 private:

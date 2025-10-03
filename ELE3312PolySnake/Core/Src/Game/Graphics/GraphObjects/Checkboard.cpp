@@ -6,6 +6,7 @@
 #include "Game/Sections/SnakeGame.h"
 #include "Game/Graphics/GraphObjects/Checkboard.h"
 #include "Game/Graphics/GraphObjects/Head.h"
+#include "Game/Graphics/GraphObjects/BodyPart.h"
 #include "Interfaces/Display/Point.h"
 
 void Checkboard::setup(const Rect &rect, Display *disp, SnakeGame* game) { //Add playerManager as a parameter
@@ -68,28 +69,94 @@ void Checkboard::draw(){
 }
 
 void Checkboard::update(){
-    if (!ready) return;
+    if (!ready || !snakeGame) return;
 
     const uint16_t halfGridWidth  = gridWidth / 2;
     const uint16_t halfGridHeight = gridHeight / 2;
 
     // Dessiner la tête du serpent
-    Head* headTile = snakeGame->get;
-    uint16_t headX = toScreenX((headTile->getRect()).getX1()) - halfGridWidth;
-    uint16_t headY = toScreenX((headTile->getRect()).getY1()) - halfGridWidth;
-    drawSprite(headX, headY, SnakeHead);
+    Head* headTile = snakeGame->getHead();
+    if (headTile) {
+        uint16_t headX = toScreenX((headTile->getRect()).getX1()) - halfGridWidth;
+        uint16_t headY = toScreenY((headTile->getRect()).getY1()) - halfGridHeight;
+        drawSprite(headX, headY, &snake_head);
+    }
 
     // Dessiner chaque partie du corps
-    for (auto& part : *(SnakeGame->body)) {
-        uint16_t bodyX = toScreenX(part.x) - halfGridWidth;
-        uint16_t bodyY = toScreenY(part.y) - halfGridHeight;
-        drawSprite(bodyX, bodyY, snakeBodySprite);
+    std::vector<BodyPart*> body = snakeGame->getBody();
+    if (body) {
+        for (auto& part : *body) {
+            uint16_t bodyX = toScreenX(part.getRect().getX1()) - halfGridWidth;
+            uint16_t bodyY = toScreenY(part.getRect().getY1()) - halfGridHeight;
+            drawSprite(bodyX, bodyY, &snake_body);
+        }
     }
 }
 
 
 uint16_t Checkboard::toScreenX(uint16_t gridX) const{
 	return gridX * gridWidth + rect.getX1();
+}
+
+uint16_t Checkboard::toScreenY(uint16_t gridY) const{
+	return gridY * gridHeight + rect.getY1();
+}
+
+uint16_t Checkboard::numHorizontalTiles() const{
+	return rect.getWidth() / gridWidth;
+}
+
+uint16_t Checkboard::numVerticalTiles() const{
+	return rect.getHeight() / gridHeight;
+}
+
+void Checkboard::drawSprite(uint16_t x, uint16_t y, Sprite *sprite) const{
+	if (!disp || !sprite) return;
+	
+	uint16_t *data = sprite->getData();
+	uint16_t width = sprite->getWidth();
+	uint16_t height = sprite->getHeight();
+	
+	for (uint16_t py = 0; py < height; ++py) {
+		for (uint16_t px = 0; px < width; ++px) {
+			uint16_t pixelColor = data[py * width + px];
+			if (pixelColor != 0x0000) { // Ne pas dessiner les pixels transparents
+				disp->drawPixel(static_cast<Color>(pixelColor), x + px, y + py);
+			}
+		}
+	}
+}
+
+Sprite* Checkboard::getSpriteAt(Point p) const{
+	if (checkboard.empty()) return nullptr;
+	
+	uint16_t gridX = (p.getX() - rect.getX1()) / gridWidth;
+	uint16_t gridY = (p.getY() - rect.getY1()) / gridHeight;
+	
+	if (gridX >= numHorizontalTiles() || gridY >= numVerticalTiles()) {
+		return nullptr;
+	}
+	
+	uint32_t index = gridY * numHorizontalTiles() + gridX;
+	if (index >= checkboard.size()) return nullptr;
+	
+	return checkboard[index];
+}
+
+void Checkboard::clear(){
+	if (!disp) return;
+	disp->fillScreen(Color::BLACK);
+}
+
+void Checkboard::removeFruit(uint16_t x, uint16_t y){
+	if (checkboard.empty()) return;
+	
+	uint32_t pos = (y * numHorizontalTiles()) + x;
+	if (pos >= checkboard.size()) return;
+	
+	Sprite * fruitSprite = checkboard.at(pos);
+	checkboard[pos] = sprites[0]; // Remplacer par le sprite de fond (bg_white)
+	drawSprite(toScreenX(x), toScreenY(y), fruitSprite);
 }
 
 

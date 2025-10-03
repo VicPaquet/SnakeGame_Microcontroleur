@@ -96,13 +96,13 @@ namespace ELE3312 {
 			void drawRect(Color color,
 					uint16_t x, uint16_t y, uint16_t w, uint16_t h) override;
 
-			void drawRect(Color color, const Rect<uint16_t> &rect) override;
+			void drawRect(Color color, const Rect &rect) override;
 
 			void fillRect(Color color,
 					uint16_t x, uint16_t y, uint16_t w, uint16_t h) override;
 
 
-			void fillRect(Color color, const Rect<uint16_t> &rect) override;
+			void fillRect(Color color, const Rect &rect) override;
 
 			void drawCircle(Color color,
 					uint16_t x, uint16_t y, uint16_t r) override;

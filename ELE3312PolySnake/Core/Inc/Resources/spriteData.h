@@ -136,25 +136,12 @@ uint16_t sprite_banana[] = {
 Sprite banana(10, 10, SpriteType::Fruit, sprite_banana);
 
 std::vector<Sprite*> sprites = {
-	&sprite0,
-	&sprite1,
-	&sprite2,
-	&sprite3,
-	&sprite4,
-	&sprite5,
-	&sprite6,
-	&sprite7,
-	&sprite8,
-	&sprite9,
-	&sprite10,
-	&sprite11,
-	&sprite12,
-	&sprite13,
-	&sprite14,
-	&sprite15,
-	&sprite16,
-	&sprite17,
-	&sprite18};
-#endif
-
+	&bg_white,    // 0 - Background blanc
+	&bg_gray,     // 1 - Background gris
+	&snake_head,  // 2 - Tête du serpent
+	&snake_body,  // 3 - Corps du serpent
+	&snake_tail,  // 4 - Queue du serpent
+	&apple,       // 5 - Pomme
+	&banana       // 6 - Banane
+};
 #endif

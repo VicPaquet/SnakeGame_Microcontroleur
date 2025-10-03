@@ -5,8 +5,8 @@
  *      Author: vicpa
  */
 
-#ifndef INC_GAME_GRAPHICS_GRAPHOBJECTS_GRAPHOBJECTS_H_
-#define INC_GAME_GRAPHICS_GRAPHOBJECTS_GRAPHOBJECTS_H_
+#ifndef INC_GAME_GRAPHICS_GRAPHOBJECTS_GRAPHOBJECTS_HPP_
+#define INC_GAME_GRAPHICS_GRAPHOBJECTS_GRAPHOBJECTS_HPP_
 
 #include "Interfaces/Display/Display.h"
 #include "Interfaces/Display/Rect.h"
