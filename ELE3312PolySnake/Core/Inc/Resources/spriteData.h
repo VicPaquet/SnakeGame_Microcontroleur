@@ -3,18 +3,19 @@
 
 
 #include "Interfaces/Display/Sprite.h"
+#include "Interfaces/Display/Display.h"
 #include <memory>
 #include <vector>
 
 // === Couleurs en RGB565 ===
-#define COLOR_TRANSPARENT 0x0000  // noir (ou transparent)
-#define COLOR_WHITE       0xFFFF
-#define COLOR_GRAY        0xC618
-#define COLOR_GREEN       0x07E0
-#define COLOR_DARKGREEN   0x03E0
-#define COLOR_RED         0xF800
-#define COLOR_YELLOW      0xFFE0
-#define COLOR_BROWN       0x8200
+#define COLOR_TRANSPARENT 20  // noir (ou transparent)
+#define COLOR_WHITE       15
+#define COLOR_GRAY        7
+#define COLOR_GREEN       10
+#define COLOR_DARKGREEN   2
+#define COLOR_RED         12
+#define COLOR_YELLOW      14
+#define COLOR_BROWN       4
 
 // ==========================
 // Snake - Head

@@ -7,6 +7,9 @@
 #include <vector>
 #include <memory>
 
+// Forward declaration to avoid circular dependency
+class SnakeGame;
+
 enum class CollisionType{
 		None, Fruits, Opponent, Outline, Unknown,
 	};
@@ -33,7 +36,7 @@ private:
 	uint16_t gridHeight; // The height in pixels
 	uint16_t gridWidth;  // The width in pixels
 	std::vector<Sprite*> checkboard; //Contains all the Sprites of the maze
-	SnakeGame* snakeGame;
+	SnakeGame* snakeGame = nullptr;
 
 
 	uint16_t numHorizontalTiles() const;

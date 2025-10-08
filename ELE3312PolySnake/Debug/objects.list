@@ -3,6 +3,7 @@
 "./Core/Src/Game/Graphics/GraphObjects/Fruit.o"
 "./Core/Src/Game/Graphics/GraphObjects/Head.o"
 "./Core/Src/Game/Graphics/GraphObjects.o"
+"./Core/Src/Game/Sections/SnakeGame.o"
 "./Core/Src/Interfaces/Display/Point.o"
 "./Core/Src/Interfaces/Display/Rect.o"
 "./Core/Src/Interfaces/Display/Sprite.o"

@@ -12,6 +12,7 @@
 
 class Head : public GraphObject {
 public:
+	Head() = default;
 	virtual ~Head() = default;
 	void draw() override;
 	void clear() override;

@@ -1,12 +1,5 @@
-/*
- * Head.h
- *
- *  Created on: Sep 29, 2025
- *      Author: vicpa
- */
-
-#ifndef INC_GAME_GRAPHICS_GRAPHOBJECTS_HEAD_H_
-#define INC_GAME_GRAPHICS_GRAPHOBJECTS_HEAD_H_
+#ifndef INC_GAME_GRAPHICS_GRAPHOBJECTS_BODYPART_H_
+#define INC_GAME_GRAPHICS_GRAPHOBJECTS_BODYPART_H_
 
 #include "Game/Graphics/GraphObjects.h"
 
@@ -22,6 +15,4 @@ public:
 	void clear() override;
 };
 
-
-
-#endif /* INC_GAME_GRAPHICS_GRAPHOBJECTS_HEAD_H_ */
+#endif /* INC_GAME_GRAPHICS_GRAPHOBJECTS_BODYPART_H_ */

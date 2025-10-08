@@ -40,6 +40,7 @@ CPP_DEPS :=
 SUBDIRS := \
 Core/Src/Game/Graphics/GraphObjects \
 Core/Src/Game/Graphics \
+Core/Src/Game/Sections \
 Core/Src/Interfaces/Display \
 Core/Src/NucleoImp/Display \
 Core/Src \
