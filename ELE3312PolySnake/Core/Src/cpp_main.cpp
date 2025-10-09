@@ -14,35 +14,28 @@
 #include <cpp_main.h>
 #include <NucleoImp/Display/ILI9341Display.h>
 #include "Game/Sections/SnakeGame.h"
+#include "Game/Game.h"
 
 // Instance globale du jeu Snake
-SnakeGame snakeGame;
+
 ILI9341Display display;
+
 
 /**
  * brief Fonction principale pour tester la génération du snake
  */
 
 void cpp_main(peripheral_handles *handles) {
-    // Initialiser l'affichage TFT
-    display.setup(handles->hspi_tft);
-    display.clearScreen();
-    
     // Afficher le titre du test
     display.drawString(20, 100, "PolySnake - Test Generation", Color::WHITE);
     HAL_Delay(2000);
     
     // Configurer le jeu Snake avec l'affichage
-    snakeGame.setup(&display);
-    
-    // Exécuter le jeu (initialisation + affichage)
-    while (1){
-    	snakeGame.run();
-    	HAL_Delay(5000);
-        display.drawString(20, 120, "Redemarrage...", Color::WHITE);
-        HAL_Delay(1000);
-    }
-    
+    Game game;
+    game.setup(handles);
+    game.run();
+
+
     
 //    // Attendre un peu pour voir le résultat
 //    HAL_Delay(5000);

@@ -16,6 +16,17 @@ public:
 	virtual ~Head() = default;
 	void draw() override;
 	void clear() override;
+
+
+	Rect getOldHead() const {return oldHeadPosition;}
+		void setOldHead(uint16_t x, uint16_t y) {
+			oldHeadPosition.setX1(x);
+			oldHeadPosition.setY1(y);
+		}
+
+private:
+	Rect oldHeadPosition;
+
 };
 
 

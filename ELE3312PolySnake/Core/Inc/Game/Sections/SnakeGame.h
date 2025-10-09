@@ -32,7 +32,7 @@ enum class SnakeGameState {
 class SnakeGame{
 public:
 	SnakeGame();
-	void setup(Display *disp); // Add MotionInput, Communication et Player Manager Class
+	void setup(Display *disp, Keypad *keypad); // Add MotionInput, Communication et Player Manager Class
 
 	virtual ~SnakeGame();
 	bool run();
@@ -40,6 +40,7 @@ public:
 
     // Getters pour le nouveau système
     MySnake* getMySnake() const { return mySnake.get(); }
+    Keypad* getKeypad() const { return keypad; }
     const std::vector<std::unique_ptr<Fruit>>& getFruits() const { return fruits; }
     int getFruitCount() const { return fruit_count; }
     
@@ -69,6 +70,7 @@ public:
 	bool checkSelfCollision();    // Vérifier collision avec le corps
 private:
 	Display *disp = nullptr;
+	Keypad *keypad = nullptr;
 	//MotionInput *input = nullptr;
 	//Communication *comm = nullptr;
 	//PlayerManager *players = nullptr;

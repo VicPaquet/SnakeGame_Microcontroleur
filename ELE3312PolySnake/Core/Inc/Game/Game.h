@@ -18,6 +18,7 @@
 #include "NucleoImp/Keypad/GPIOKeypad.h"
 #include "NucleoImp/MotionInput/MPU6050MotionInput.h"
 #include "NucleoImp/RGBLight/RGBLED.h"
+#include "Game/Sections/SnakeGame.h"
 //#include "NucleoImp/SerialCom/UART.h"
 //#include "NucleoImp/Sound/DACSound.h"
 //#include "NucleoImp/SerialCom/Ringbuffer.h"
@@ -68,6 +69,8 @@ void main_run(peripheral_handles *handlers) ;
 		static HCSR04Distance distance;
 		static GPIOKeypad keypad;
 		static RGBLED rgbLed;
+
+		static SnakeGame snakeGame;
 		//static UART uart;
 		//static DACSound sound;
 		// Players
@@ -79,7 +82,7 @@ void main_run(peripheral_handles *handlers) ;
 		static ResultScreen victoryScreen;
 		*/
 		// State
-		GameState state = GameState::Menu;
+		//GameState state = GameState::Menu;
 		// uart
 		//Ringbuffer uartBuffer;
 

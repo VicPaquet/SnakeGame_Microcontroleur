@@ -212,6 +212,7 @@ void MySnake::moveHead(Direction direction) {
     
     uint16_t currentX = getHeadX();
     uint16_t currentY = getHeadY();
+    head->setOldHead(currentX, currentY);
     uint16_t newX = currentX;
     uint16_t newY = currentY;
     
@@ -256,11 +257,8 @@ void MySnake::moveBody() {
     
     // Déplacer la première partie du corps vers l'ancienne position de la tête
     if (!body.empty()) {
-        uint16_t oldHeadX = (head->getRect().getX1() - rect.getX1()) / 10;
-        uint16_t oldHeadY = (head->getRect().getY1() - rect.getY1()) / 10;
-        
-        uint16_t pixelX = oldHeadX * 10 + rect.getX1();
-        uint16_t pixelY = oldHeadY * 10 + rect.getY1();
+    	uint16_t pixelX = head->getOldHead().getX1() * 10 + rect.getX1();
+    	uint16_t pixelY = head->getOldHead().getY1() * 10 + rect.getY1();
         body[0].setPosition(pixelX, pixelY);
     }
 }
@@ -287,18 +285,18 @@ bool MySnake::isValidPosition(uint16_t x, uint16_t y) const {
 
 
 // Définition (unique) du global
-Keypad* g_keypad = nullptr;
-static GPIOKeypad s_keypadImpl; // instance concrète
+//Keypad* g_keypad = nullptr;
+//static GPIOKeypad s_keypadImpl; // instance concrète
 
-Direction MySnake::setDirection() {
+Direction MySnake::setDirection(Keypad* keypad) {
     // Sécurité: si pas de keypad disponible, on ne change rien.
-    Keypad* kp = g_keypad;  // ou: Keypad* kp = &getKeypad();
-    if (!kp) {
+
+    if (!keypad) {
         return currentDirection;
     }
 
     // Lire la touche directionnelle (consomme les flags si une touche 2/4/6/8 est détectée)
-    KeyCode kc = kp->getDirection();
+    KeyCode kc = keypad->getDirection();
 
     // Par défaut: on garde la direction courante s’il n’y a rien de pertinent.
     Direction newDir = currentDirection;

@@ -7,6 +7,7 @@
  */
 
 #include "Game/Game.h"
+#include "Game/Sections/SnakeGame.h"
 //#include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/RGBLight/RGBLED.h"
 #include "NucleoImp/AnalogInput/ADCInput.h"
@@ -19,6 +20,7 @@ ILI9341Display Game::display;
 HCSR04Distance Game::distance;
 GPIOKeypad Game::keypad;
 RGBLED Game::rgbLed;
+SnakeGame Game::snakeGame;
 //UART Game::uart;
 //DACSound Game::sound;
 // Players
@@ -31,6 +33,7 @@ Combat Game::combat;
 VictoryScreen Game::victoryScreen;
 */
 Game::Game(){
+
 }
 
 /** @brief Constructor for the Game class.
@@ -43,6 +46,10 @@ void Game::setup(peripheral_handles *handles) {
 	 //sound.setup(handles->hdac, handles->htim_dac, 84000000UL);
 	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
 	 motionInput.setup(handles->hi2c);
+	 snakeGame.setup(&display, &keypad);
+	 keypad.setup(handles->gpio_keypad);
+	 display.setup(handles->hspi_tft);
+	 display.clearScreen();
 	 //uart.setup(handles->huart, 5);
 
 	 /*
@@ -62,9 +69,12 @@ void Game::setup(peripheral_handles *handles) {
 //extern volatile uint16_t game_delay;
 
 void Game::run(){
-	uint8_t buff[BUFFER_SIZE]= {0};
+	//uint8_t buff[BUFFER_SIZE]= {0};
 	//SerialFrame frame; // à implementer
 	while(1){
+		snakeGame.run();
+		HAL_Delay(100);
+	}
 		/*
 		// Check UART and dispatch messages
 		if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
@@ -103,11 +113,11 @@ void Game::run(){
 			case GameState::Play:
 				//play.handleUserInput();
 				break;
-			/*
+
 			case GameState::VictoryScreen:
 				break;
 				*/
-		}/*
+		/*
 		// Update game
 		if (game_delay == 1) {
 			game_delay = 0;
@@ -136,7 +146,7 @@ void Game::run(){
 
 			}
 		}*/
-	}
+}
 
 
 /** @brief Method that takes data provided by the uart interrupt.

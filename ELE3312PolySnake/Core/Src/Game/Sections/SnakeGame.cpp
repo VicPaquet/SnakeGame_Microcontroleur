@@ -37,8 +37,9 @@ SnakeGame::~SnakeGame() {
 }
 
 
-void SnakeGame::setup(Display *disp) {
+void SnakeGame::setup(Display *disp, Keypad *keypad) {
 	this->disp = disp;
+	this->keypad = keypad;
 	fruitEncountered = false;
     fruit_count = 0;
     score = 0;
@@ -97,8 +98,7 @@ bool SnakeGame::run() {
             // TODO: Intégrer la lecture des entrées (clavier/accéléromètre)
 
         	auto s = getMySnake();
-        	s->setDirection();
-
+        	s->setDirection(keypad);
 
         	moveSnake(0); // eat = 0 pour un mouvement normal
             
