@@ -45,9 +45,12 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/NucleoImp/Display/ili9341.h \
  ../Core/Inc/NucleoImp/Display/ili9341_font.h \
  ../Core/Inc/Game/Sections/SnakeGame.h \
- ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/MySnake.h \
  ../Core/Inc/Game/Graphics/GraphObjects.h \
- ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h
+ ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h \
+ ../Core/Inc/Interfaces/Display/Sprite.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -96,6 +99,9 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/NucleoImp/Display/ili9341.h:
 ../Core/Inc/NucleoImp/Display/ili9341_font.h:
 ../Core/Inc/Game/Sections/SnakeGame.h:
-../Core/Inc/Game/Graphics/GraphObjects/Head.h:
+../Core/Inc/Game/Graphics/GraphObjects/MySnake.h:
 ../Core/Inc/Game/Graphics/GraphObjects.h:
+../Core/Inc/Game/Graphics/GraphObjects/Head.h:
 ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h:
+../Core/Inc/Interfaces/Display/Sprite.h:
+../Core/Inc/Game/Graphics/GraphObjects/Fruit.h:

@@ -9,9 +9,8 @@
 #define INC_GAME_SNAKEGAME_H_
 
 #include "Interfaces/Display/Display.h"
-#include "Game/Graphics/GraphObjects/Head.h"
-#include "Game/Graphics/GraphObjects/BodyPart.h"
-#include "Game/Graphics/GraphObjects.h"
+#include "Game/Graphics/GraphObjects/MySnake.h"
+#include "Game/Graphics/GraphObjects/Fruit.h"
 #include "Interfaces/Display/Point.h"
 #include <vector>
 #include <memory>
@@ -24,12 +23,6 @@ class Checkboard;
 #define BOARD_WIDTH 32   // 32 tuiles de 10x10 = 320 pixels
 #define BOARD_HEIGHT 24  // 24 tuiles de 10x10 = 240 pixels
 #define NUMBER_OF_DIRECTION 4 // Pour générer une direction aléatoire
-
-struct tile {
-    uint16_t x;
-    uint16_t y;
-    bool active;
-};
 
 
 enum class SnakeGameState {
@@ -45,23 +38,45 @@ public:
 	bool run();
 	//void handleRemote(SnakeGameMessage msg);
 
-    Head* getHead() const { return head; }
-    const std::vector<BodyPart>& getBody() const { return body; }
-    const tile* getFruits() const { return fruits; }
+    // Getters pour le nouveau système
+    MySnake* getMySnake() const { return mySnake.get(); }
+    const std::vector<std::unique_ptr<Fruit>>& getFruits() const { return fruits; }
     int getFruitCount() const { return fruit_count; }
+    
+    // Getters utilise MySnake
+    Head* getHead() const { 
+        return mySnake ? mySnake->getHead() : nullptr; 
+    }
+    const std::vector<BodyPart>& getBody() const { 
+        static std::vector<BodyPart> emptyBody;
+        return mySnake ? mySnake->getBody() : emptyBody; 
+    }
+    
 	void restart();
 	
 	// Public initialization methods
 	void initializeSnake();
 	void initializeFruits();
+	
+	// Méthodes de contrôle du serpent selon les spécifications du labo
+	void moveSnake(int eat = 0);  // Faire avancer le serpent
+	void turnSnakeLeft();         // Tourner à gauche
+	void turnSnakeRight();        // Tourner à droite
+	
+	// Méthodes de jeu
+	bool checkFruitCollision();   // Vérifier collision avec fruits
+	bool checkWallCollision();    // Vérifier collision avec murs
+	bool checkSelfCollision();    // Vérifier collision avec le corps
 private:
 	Display *disp = nullptr;
 	//MotionInput *input = nullptr;
 	//Communication *comm = nullptr;
 	//PlayerManager *players = nullptr;
-    Head* head = nullptr;                // Pointeur vers la tête du serpent
-    std::vector<BodyPart> body; // Vecteur contenant le corps du serpent
-    tile fruits[MAX_FRUITS];
+    
+    // Système principal avec MySnake et Fruit GraphObjects
+    std::unique_ptr<MySnake> mySnake;    // Le serpent principal
+    std::vector<std::unique_ptr<Fruit>> fruits; // Les fruits comme GraphObjects
+    
     std::unique_ptr<Checkboard> checkboard;
     bool newCheckboard = true;
     bool fruitEncountered;
@@ -71,7 +86,6 @@ private:
     SnakeGameState state = SnakeGameState::Initialization;
 
 	void initialize();
-	bool updateSnakePosition(float x, float y);
 	
 	// Helper functions
 	int randomRange(int min, int max);

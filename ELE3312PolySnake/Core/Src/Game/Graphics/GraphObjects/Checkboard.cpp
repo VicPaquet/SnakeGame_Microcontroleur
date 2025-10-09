@@ -104,37 +104,17 @@ void Checkboard::draw(){
 void Checkboard::update(){
     if (!ready || !snakeGame) return;
 
-    const uint16_t halfGridWidth  = gridWidth / 2;
-    const uint16_t halfGridHeight = gridHeight / 2;
-
-    // Dessiner la tête du serpent
-    Head* headTile = snakeGame->getHead();
-    if (headTile) {
-        uint16_t headX = (headTile->getRect()).getX1();
-        uint16_t headY = (headTile->getRect()).getY1();
-        drawSprite(headX, headY, &snake_head);
-    }
-
-    // Dessiner chaque partie du corps
-    const std::vector<BodyPart>& body = snakeGame->getBody();
-    if (!body.empty()) {
-        for (const auto& part : body) {
-            uint16_t bodyX = part.getRect().getX1();
-            uint16_t bodyY = part.getRect().getY1();
-            drawSprite(bodyX, bodyY, &snake_body);
-        }
+    // Dessiner le serpent complet avec MySnake::draw()
+    MySnake* snake = snakeGame->getMySnake();
+    if (snake) {
+        snake->draw(); // Dessine automatiquement la tête et le corps avec les sprites
     }
     
-    // Dessiner les fruits
-    const tile* fruits = snakeGame->getFruits();
-    int fruitCount = snakeGame->getFruitCount();
-    for (int i = 0; i < fruitCount; i++) {
-        if (fruits[i].active) {
-            uint16_t fruitX = toScreenX(fruits[i].x) - halfGridWidth;
-            uint16_t fruitY = toScreenY(fruits[i].y) - halfGridHeight;
-            // Alterner entre pomme et banane (ou autre logique de type)
-            Sprite* fruitSprite = (i % 2 == 0) ? &apple : &banana;
-            drawSprite(fruitX, fruitY, fruitSprite);
+    // Dessiner les fruits avec leur méthode draw()
+    const auto& fruits = snakeGame->getFruits();
+    for (const auto& fruit : fruits) {
+        if (fruit->isActive()) {
+            fruit->draw(); // Dessine automatiquement avec le bon sprite selon le type
         }
     }
 }
@@ -197,16 +177,6 @@ void Checkboard::clear(){
 	disp->fillScreen(Color::BLACK);
 }
 
-void Checkboard::removeFruit(uint16_t x, uint16_t y){
-	if (checkboard.empty()) return;
-	
-	uint32_t pos = (y * numHorizontalTiles()) + x;
-	if (pos >= checkboard.size()) return;
-	
-	Sprite * fruitSprite = checkboard.at(pos);
-	checkboard[pos] = sprites[0]; // Remplacer par le sprite de fond (bg_white)
-	drawSprite(toScreenX(x), toScreenY(y), fruitSprite);
-}
 
 
 

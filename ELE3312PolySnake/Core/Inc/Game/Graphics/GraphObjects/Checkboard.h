@@ -29,7 +29,6 @@ public:
 	void update();
 
 	//Collision checkPosition(uint16_t x, uint16_t y, Player *player, Player *opponent);
-	void removeFruit(uint16_t x, uint16_t y);
 	bool isReady();
 
 private:

@@ -22,7 +22,7 @@ SnakeGame snakeGame;
 ILI9341Display display;
 
 /**
- * @brief Fonction principale pour tester la génération du snake
+ * brief Fonction principale pour tester la génération du snake
  */
 
 void cpp_main(peripheral_handles *handles) {
