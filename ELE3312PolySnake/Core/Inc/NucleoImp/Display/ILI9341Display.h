@@ -18,7 +18,6 @@
 
 #include "main.h"
 
-namespace ELE3312 {
 
 	/** @brief Transforms a Color enum to an ili9341_color_t enum.
 	 * @details The function is used to transform a generic color representation
@@ -143,7 +142,6 @@ namespace ELE3312 {
 
 
 	};
-} // End of namespace ELE3312
 
 /**
  * @}

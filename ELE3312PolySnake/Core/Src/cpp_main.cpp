@@ -15,8 +15,6 @@
 #include <NucleoImp/Display/ILI9341Display.h>
 #include "Game/Sections/SnakeGame.h"
 
-using namespace ELE3312;
-
 // Instance globale du jeu Snake
 SnakeGame snakeGame;
 ILI9341Display display;

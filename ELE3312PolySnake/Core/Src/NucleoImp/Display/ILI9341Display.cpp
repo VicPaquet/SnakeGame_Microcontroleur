@@ -10,7 +10,6 @@
 
 #include "NucleoImp/Display/ILI9341Display.h"
 #include <cmath>
-using namespace ELE3312;
 
 /** @brief Default constructor for the ILI9341Display class.
   */
@@ -57,7 +56,7 @@ void ILI9341Display::clearScreen() {
  * @param [in] The desired color.
  */
 void ILI9341Display::fillScreen(Color color) {
-	ili9341_fill_screen(lcd_, ELE3312::colorToILI9341Color(color));
+	ili9341_fill_screen(lcd_, colorToILI9341Color(color));
 }
 
 /** @brief Draws a colored pixel on the screen.
@@ -69,7 +68,7 @@ void ILI9341Display::fillScreen(Color color) {
  * @param [in] y The y position of the pixel
  */
 void ILI9341Display::drawPixel(Color color, uint16_t x, uint16_t y) {
-	ili9341_draw_pixel(lcd_, ELE3312::colorToILI9341Color(color), x, y);
+	ili9341_draw_pixel(lcd_, colorToILI9341Color(color), x, y);
 }
 
 /** @brief Draws a line on the screen.
@@ -83,7 +82,7 @@ void ILI9341Display::drawPixel(Color color, uint16_t x, uint16_t y) {
  * @param [in] y1 The y position of the second point.
  */
 void ILI9341Display::drawLine(Color color, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-	ili9341_draw_line(lcd_, ELE3312::colorToILI9341Color(color),  x0, y0, x1, y1);
+	ili9341_draw_line(lcd_, colorToILI9341Color(color),  x0, y0, x1, y1);
 }
 
 /** @brief Draws a rectangle on the screen.
@@ -97,7 +96,7 @@ void ILI9341Display::drawLine(Color color, uint16_t x0, uint16_t y0, uint16_t x1
  * @param [in] height The height of the rectangle in pixels.
  */
 void ILI9341Display::drawRect(Color color, uint16_t x, uint16_t y, uint16_t w, uint16_t h){
-	ili9341_draw_rect(lcd_, ELE3312::colorToILI9341Color(color), x, y, w, h);
+	ili9341_draw_rect(lcd_, colorToILI9341Color(color), x, y, w, h);
 }
 
 /** @brief Draws a rectangle on the screen.
@@ -108,7 +107,7 @@ void ILI9341Display::drawRect(Color color, uint16_t x, uint16_t y, uint16_t w, u
  * and position of the rectangle.
  */
 void ILI9341Display::drawRect(Color color, const Rect &rect) {
-	ili9341_draw_rect(lcd_, ELE3312::colorToILI9341Color(color), rect.getX1(), rect.getY1(), 
+	ili9341_draw_rect(lcd_, colorToILI9341Color(color), rect.getX1(), rect.getY1(),
 		   rect.getWidth(), rect.getHeight());
 }
 
@@ -123,7 +122,7 @@ void ILI9341Display::drawRect(Color color, const Rect &rect) {
  * @param [in] height The height of the rectangle in pixels.
  */
 void ILI9341Display::fillRect(Color color, uint16_t x, uint16_t y, uint16_t w, uint16_t h){
-	ili9341_fill_rect(lcd_, ELE3312::colorToILI9341Color(color), x, y, w, h);
+	ili9341_fill_rect(lcd_, colorToILI9341Color(color), x, y, w, h);
 }
 
 /** @brief Draws a filled rectangle on the screen.
@@ -136,7 +135,7 @@ void ILI9341Display::fillRect(Color color, uint16_t x, uint16_t y, uint16_t w, u
  * dimension and position of the rectangle.
  */
 void ILI9341Display::fillRect(Color color, const Rect &rect){
-	ili9341_fill_rect(lcd_, ELE3312::colorToILI9341Color(color),  rect.getX1(), rect.getY1(), 
+	ili9341_fill_rect(lcd_, colorToILI9341Color(color),  rect.getX1(), rect.getY1(),
 		   rect.getWidth(), rect.getHeight());
 }
 
@@ -150,7 +149,7 @@ void ILI9341Display::fillRect(Color color, const Rect &rect){
  * @param [in] radius The radius of the circle in pixels.
  */
 void ILI9341Display::drawCircle(Color color, uint16_t x, uint16_t y, uint16_t r) {
-	ili9341_draw_circle(lcd_, ELE3312::colorToILI9341Color(color), x, y, r);
+	ili9341_draw_circle(lcd_, colorToILI9341Color(color), x, y, r);
 }
 
 void ILI9341Display::drawCheckerboard(uint16_t tileSize) {
@@ -176,7 +175,7 @@ void ILI9341Display::drawCheckerboard(uint16_t tileSize) {
  * @param [in] radius The radius of the circle in pixels.
  */
 void ILI9341Display::fillCircle(Color color, uint16_t x, uint16_t y, uint16_t r) {
-	ili9341_fill_circle(lcd_, ELE3312::colorToILI9341Color(color), x, y, r);
+	ili9341_fill_circle(lcd_, colorToILI9341Color(color), x, y, r);
 }
 
 /** @brief Draws a single character on the screen.
@@ -207,11 +206,11 @@ void ILI9341Display::drawChar(uint16_t x, uint16_t y, char ch) {
  */
 void ILI9341Display::drawString(uint16_t x, uint16_t y, const std::string text, Color color) {
 	if (ptext_attr_ == nullptr){
-			ptext_attr_ = new ili9341_text_attr_t{&ili9341_font_11x18,  ELE3312::colorToILI9341Color(color), ILI9341_BLACK,x,y};
+			ptext_attr_ = new ili9341_text_attr_t{&ili9341_font_11x18,  colorToILI9341Color(color), ILI9341_BLACK,x,y};
 	} else {
 		ptext_attr_->origin_x = x;
 		ptext_attr_->origin_y = y;
-		ptext_attr_->fg_color = ELE3312::colorToILI9341Color(color);
+		ptext_attr_->fg_color = colorToILI9341Color(color);
 	}
 	ili9341_draw_string(lcd_, *ptext_attr_, const_cast<char*>(text.c_str()));
 }
@@ -438,7 +437,7 @@ void ILI9341Display::fillArc( uint16_t x, uint16_t y, uint16_t r1, uint16_t r2, 
   }
 
   //startWrite();
-  writeFillArcHelper( x, y, r1, r2, start, end, ELE3312::colorToILI9341Color(color));
+  writeFillArcHelper( x, y, r1, r2, start, end, colorToILI9341Color(color));
   //endWrite();
 }
 
