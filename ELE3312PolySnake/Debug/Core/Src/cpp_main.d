@@ -50,6 +50,8 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
  ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h \
  ../Core/Inc/Interfaces/Display/Sprite.h \
+ ../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h \
+ ../Core/Inc/Interfaces/Keypad/Keypad.h \
  ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -104,4 +106,6 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Game/Graphics/GraphObjects/Head.h:
 ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h:
 ../Core/Inc/Interfaces/Display/Sprite.h:
+../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h:
+../Core/Inc/Interfaces/Keypad/Keypad.h:
 ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h:

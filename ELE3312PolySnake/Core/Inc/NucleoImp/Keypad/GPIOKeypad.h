@@ -24,6 +24,7 @@
 			virtual bool isKeyPressed(const KeyCode code) const override;
 			virtual bool isAnnyKeyPressed() const override;
 			virtual KeyCode getFirstKeyPressed() override;
+			virtual KeyCode getDirection() override;
 			virtual char getFirstKeyCharacter() override;
 			virtual void update() override;
 		private:

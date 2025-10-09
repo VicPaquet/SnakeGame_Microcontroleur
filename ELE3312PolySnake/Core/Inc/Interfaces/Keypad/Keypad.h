@@ -49,6 +49,7 @@
 			virtual bool isKeyPressed(const KeyCode code) const = 0;
 			virtual bool isAnnyKeyPressed() const = 0;
 			virtual KeyCode getFirstKeyPressed() = 0;
+			virtual KeyCode getDirection() = 0;
 			virtual char getFirstKeyCharacter() = 0;
 			virtual void update() = 0;
 

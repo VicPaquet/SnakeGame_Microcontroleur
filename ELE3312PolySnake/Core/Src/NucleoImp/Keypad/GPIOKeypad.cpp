@@ -81,6 +81,37 @@ KeyCode GPIOKeypad::getFirstKeyPressed() {
 	return code;
 }
 
+
+//code pour getDirection
+KeyCode GPIOKeypad::getDirection() {
+    // Ne renvoie une direction que s'il y a (au moins) une touche enfoncée
+    if (!keyPressDetected) {
+        return KeyCode::UNKNOWN;
+    }
+
+    // Priorité déterministe si plusieurs directions sont pressées simultanément.
+    // Ordre: 2, 4, 6, 8
+    const uint32_t dirKeys[] = {
+        static_cast<uint32_t>(KeyCode::TWO),   // NORTH
+        static_cast<uint32_t>(KeyCode::FOUR),  // EAST
+        static_cast<uint32_t>(KeyCode::SIX),   // WEST
+        static_cast<uint32_t>(KeyCode::EIGHT)  // SOUTH
+    };
+
+    for (uint32_t k : dirKeys) {
+        if (keysPressed & k) {
+            // On "consomme" l’événement seulement si c’est une direction
+            keysPressed = 0;
+            keyPressDetected = false;
+            return static_cast<KeyCode>(k);
+        }
+    }
+
+    // else
+    return KeyCode::UNKNOWN;
+}
+
+
 /**
   * @brief Returns the ASCII character of the first key of the 
   * keypad that was pressed when the state of the keypad was read.

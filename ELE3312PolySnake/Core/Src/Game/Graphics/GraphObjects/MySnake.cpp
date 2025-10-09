@@ -11,6 +11,9 @@
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "Interfaces/Display/Rect.h"
 #include "Resources/spriteData.h"
+#include "Interfaces/Keypad/Keypad.h"
+#include "NucleoImp/Keypad/GPIOKeypad.h"
+
 
 MySnake::MySnake() : 
     currentDirection(Direction::EAST) {
@@ -279,4 +282,43 @@ void MySnake::addBodyPart() {
 bool MySnake::isValidPosition(uint16_t x, uint16_t y) const {
     // Vérifier les limites de l'écran (32x24 tuiles)
     return (x < 32 && y < 24);
+}
+
+
+
+// Définition (unique) du global
+Keypad* g_keypad = nullptr;
+static GPIOKeypad s_keypadImpl; // instance concrète
+
+Direction MySnake::setDirection() {
+    // Sécurité: si pas de keypad disponible, on ne change rien.
+    Keypad* kp = g_keypad;  // ou: Keypad* kp = &getKeypad();
+    if (!kp) {
+        return currentDirection;
+    }
+
+    // Lire la touche directionnelle (consomme les flags si une touche 2/4/6/8 est détectée)
+    KeyCode kc = kp->getDirection();
+
+    // Par défaut: on garde la direction courante s’il n’y a rien de pertinent.
+    Direction newDir = currentDirection;
+
+    // Mapping demandé
+    switch (kc) {
+        case KeyCode::TWO:   newDir = Direction::NORTH; break; // 2 -> NORTH
+        case KeyCode::FOUR:  newDir = Direction::EAST;  break; // 4 -> EAST
+        case KeyCode::SIX:   newDir = Direction::WEST;  break; // 6 -> WEST
+        case KeyCode::EIGHT: newDir = Direction::SOUTH; break; // 8 -> SOUTH
+        default:
+            // Aucune touche directionnelle: ne rien changer.
+            return currentDirection;
+    }
+
+    // Interdire le demi-tour (180°)
+    Direction opposite = static_cast<Direction>((static_cast<int>(currentDirection) + 2) % 4);
+    if (newDir != opposite) {
+        currentDirection = newDir;
+    }
+
+    return currentDirection;
 }

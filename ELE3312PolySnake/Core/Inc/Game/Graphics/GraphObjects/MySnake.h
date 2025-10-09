@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include "NucleoImp/Keypad/GPIOKeypad.h"
+
 
 // Directions possibles pour le serpent
 enum class Direction {
@@ -41,6 +43,8 @@ public:
     const std::vector<BodyPart>& getBody() const { return body; }
     uint16_t getLength() const { return 1 + body.size(); } // 1 pour la tête + taille du corps
     Direction getCurrentDirection() const { return currentDirection; }
+    Direction setDirection() ;
+
     
     // Getters pour les positions en grille
     uint16_t getHeadX() const;

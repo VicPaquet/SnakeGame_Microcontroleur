@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <ctime>
+#include "Game/Graphics/GraphObjects/MySnake.h"
+
 
 SnakeGame::SnakeGame() : 
     fruitEncountered(false),
@@ -93,7 +95,12 @@ bool SnakeGame::run() {
             
             // Pour l'instant, on fait juste avancer le serpent automatiquement
             // TODO: Intégrer la lecture des entrées (clavier/accéléromètre)
-            moveSnake(0); // eat = 0 pour un mouvement normal
+
+        	auto s = getMySnake();
+        	s->setDirection();
+
+
+        	moveSnake(0); // eat = 0 pour un mouvement normal
             
             // Mettre à jour l'affichage avec Checkboard
             if (checkboard) {
