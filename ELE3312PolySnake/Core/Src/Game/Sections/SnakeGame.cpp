@@ -9,6 +9,7 @@
 #include "Game/Sections/SnakeGame.h"
 #include "Game/Graphics/GraphObjects/Checkboard.h"
 #include "Interfaces/Display/Rect.h"
+#include "Interfaces/Display/Rect.h"
 #include <cpp_main.h>
 #include <NucleoImp/Display/ILI9341Display.h>
 #include <stdio.h>
@@ -37,7 +38,8 @@ SnakeGame::~SnakeGame() {
 }
 
 
-void SnakeGame::setup(Display *disp, Keypad *keypad) {
+void SnakeGame::setup(Display *disp, Keypad *keypad, MotionInput *motionInput) {
+	this->motionInput = motionInput;
 	this->disp = disp;
 	this->keypad = keypad;
 	fruitEncountered = false;
@@ -93,12 +95,19 @@ bool SnakeGame::run() {
             
         case SnakeGameState::Run:
             // Logique de jeu selon les spécifications du laboratoire
-            
-            // Pour l'instant, on fait juste avancer le serpent automatiquement
-            // TODO: Intégrer la lecture des entrées (clavier/accéléromètre)
 
-        	auto s = getMySnake();
-        	s->setDirection(keypad);
+
+        	Direction direction = Direction(keypad->getDirection());
+
+        	if (direction != Direction::NORTH && direction !=  Direction::SOUTH  && direction != Direction::EAST && direction != Direction::WEST){
+        		direction = mySnake->getCurrentDirection();
+        		mySnake->setDirection(direction);
+
+        	}
+        	else{
+        		mySnake->setDirection(direction);
+        	}
+
 
         	moveSnake(0); // eat = 0 pour un mouvement normal
             
@@ -107,9 +116,16 @@ bool SnakeGame::run() {
                 checkboard->update();
             }
             
-            // Délai pour contrôler la vitesse (selon les spécifications du labo)
-            HAL_Delay(200); // 200ms de délai
+            motionInput->update();
+            uint16_t acceleration = motionInput->getX();
+        	float sensibility = 0.1f;
+        	if ( ((acceleration > 0 && acceleration < sensibility) || ( acceleration < 0 && acceleration > - sensibility))) {
+        		return false;
+        	}
+
+            HAL_Delay(10000*acceleration);
             break;
+
     }
     return false; // Game continues
 }

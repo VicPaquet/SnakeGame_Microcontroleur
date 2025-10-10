@@ -46,7 +46,7 @@ void Game::setup(peripheral_handles *handles) {
 	 //sound.setup(handles->hdac, handles->htim_dac, 84000000UL);
 	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
 	 motionInput.setup(handles->hi2c);
-	 snakeGame.setup(&display, &keypad);
+	 snakeGame.setup(&display, &keypad,&motionInput);
 	 keypad.setup(handles->gpio_keypad);
 	 display.setup(handles->hspi_tft);
 	 display.clearScreen();
@@ -73,7 +73,7 @@ void Game::run(){
 	//SerialFrame frame; // à implementer
 	while(1){
 		snakeGame.run();
-		HAL_Delay(100);
+		HAL_Delay(10);
 	}
 		/*
 		// Check UART and dispatch messages

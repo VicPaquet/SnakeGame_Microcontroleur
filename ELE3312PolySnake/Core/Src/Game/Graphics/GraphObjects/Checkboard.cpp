@@ -117,6 +117,12 @@ void Checkboard::update(){
             fruit->draw(); // Dessine automatiquement avec le bon sprite selon le type
         }
     }
+    // Redessinner à l'ancienne position
+    uint16_t X1 = snake->getOldTail().getX1();
+    uint16_t Y1 = snake->getOldTail().getY1();
+    Sprite* sprite = this->getSpriteAt(Point(X1, Y1));
+
+    this->drawSprite(X1, Y1, sprite);
 }
 
 

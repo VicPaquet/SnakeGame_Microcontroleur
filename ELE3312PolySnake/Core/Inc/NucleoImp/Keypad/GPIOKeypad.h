@@ -11,6 +11,7 @@
   */
 
 #include "Interfaces/Keypad/Keypad.h"
+#include "Game/Graphics/GraphObjects/MySnake.h"
 #include "main.h"
 
 
@@ -24,8 +25,8 @@
 			virtual bool isKeyPressed(const KeyCode code) const override;
 			virtual bool isAnnyKeyPressed() const override;
 			virtual KeyCode getFirstKeyPressed() override;
-			virtual KeyCode getDirection() override;
 			virtual char getFirstKeyCharacter() override;
+			virtual uint16_t getDirection() const override;
 			virtual void update() override;
 		private:
 			GPIO_TypeDef * gpio;

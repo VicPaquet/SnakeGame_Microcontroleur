@@ -52,14 +52,14 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/Interfaces/Display/Sprite.h \
  ../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h \
  ../Core/Inc/Interfaces/Keypad/Keypad.h \
- ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h ../Core/Inc/Game/Game.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h \
+ ../Core/Inc/Interfaces/MotionInput/MotionInput.h \
+ ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h \
+ ../Core/Inc/NucleoImp/MotionInput/mpu6050.h ../Core/Inc/Game/Game.h \
  ../Core/Inc/NucleoImp/AnalogInput/ADCInput.h \
  ../Core/Inc/Interfaces/AnalogInput/AnalogInput.h \
  ../Core/Inc/NucleoImp/Distance/HCSR04Distance.h \
  ../Core/Inc/Interfaces/Distance/Distance.h \
- ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h \
- ../Core/Inc/NucleoImp/MotionInput/mpu6050.h \
- ../Core/Inc/Interfaces/MotionInput/MotionInput.h \
  ../Core/Inc/NucleoImp/RGBLight/RGBLED.h \
  ../Core/Inc/Interfaces/RGBLight/RGBLight.h
 ../Core/Inc/main.h:
@@ -118,13 +118,13 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h:
 ../Core/Inc/Interfaces/Keypad/Keypad.h:
 ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h:
+../Core/Inc/Interfaces/MotionInput/MotionInput.h:
+../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h:
+../Core/Inc/NucleoImp/MotionInput/mpu6050.h:
 ../Core/Inc/Game/Game.h:
 ../Core/Inc/NucleoImp/AnalogInput/ADCInput.h:
 ../Core/Inc/Interfaces/AnalogInput/AnalogInput.h:
 ../Core/Inc/NucleoImp/Distance/HCSR04Distance.h:
 ../Core/Inc/Interfaces/Distance/Distance.h:
-../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h:
-../Core/Inc/NucleoImp/MotionInput/mpu6050.h:
-../Core/Inc/Interfaces/MotionInput/MotionInput.h:
 ../Core/Inc/NucleoImp/RGBLight/RGBLED.h:
 ../Core/Inc/Interfaces/RGBLight/RGBLight.h:

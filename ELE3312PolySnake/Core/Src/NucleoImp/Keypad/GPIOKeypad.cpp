@@ -9,6 +9,8 @@
  */
 #include "NucleoImp/Keypad/GPIOKeypad.h"
 
+#include "Game/Graphics/GraphObjects/MySnake.h"
+
 
 /**
   * @brief Setup routine fort the GPIOKeypad class.
@@ -82,34 +84,34 @@ KeyCode GPIOKeypad::getFirstKeyPressed() {
 }
 
 
-//code pour getDirection
-KeyCode GPIOKeypad::getDirection() {
-    // Ne renvoie une direction que s'il y a (au moins) une touche enfoncée
-    if (!keyPressDetected) {
-        return KeyCode::UNKNOWN;
-    }
-
-    // Priorité déterministe si plusieurs directions sont pressées simultanément.
-    // Ordre: 2, 4, 6, 8
-    const uint32_t dirKeys[] = {
-        static_cast<uint32_t>(KeyCode::TWO),   // NORTH
-        static_cast<uint32_t>(KeyCode::FOUR),  // EAST
-        static_cast<uint32_t>(KeyCode::SIX),   // WEST
-        static_cast<uint32_t>(KeyCode::EIGHT)  // SOUTH
-    };
-
-    for (uint32_t k : dirKeys) {
-        if (keysPressed & k) {
-            // On "consomme" l’événement seulement si c’est une direction
-            keysPressed = 0;
-            keyPressDetected = false;
-            return static_cast<KeyCode>(k);
-        }
-    }
-
-    // else
-    return KeyCode::UNKNOWN;
-}
+////code pour getDirection
+//KeyCode GPIOKeypad::getDirection() {
+//    // Ne renvoie une direction que s'il y a (au moins) une touche enfoncée
+//    if (!keyPressDetected) {
+//        return KeyCode::UNKNOWN;
+//    }
+//
+//    // Priorité déterministe si plusieurs directions sont pressées simultanément.
+//    // Ordre: 2, 4, 6, 8
+//    const uint32_t dirKeys[] = {
+//        static_cast<uint32_t>(KeyCode::TWO),   // NORTH
+//        static_cast<uint32_t>(KeyCode::FOUR),  // EAST
+//        static_cast<uint32_t>(KeyCode::SIX),   // WEST
+//        static_cast<uint32_t>(KeyCode::EIGHT)  // SOUTH
+//    };
+//
+//    for (uint32_t k : dirKeys) {
+//        if (keysPressed & k) {
+//            // On "consomme" l’événement seulement si c’est une direction
+//            keysPressed = 0;
+//            keyPressDetected = false;
+//            return static_cast<KeyCode>(k);
+//        }
+//    }
+//
+//    // else
+//    return KeyCode::UNKNOWN;
+//}
 
 
 /**
@@ -240,6 +242,32 @@ void GPIOKeypad::selectRow(int32_t row) const{
 	}
 }
 
+uint16_t GPIOKeypad::getDirection() const {
+	constexpr uint32_t allPinsHigh = ROW1_Pin | ROW2_Pin | ROW3_Pin | ROW4_Pin; // Prepare bitmask to activate all four rows
+
+	gpio->ODR |= allPinsHigh;
+	gpio->ODR &= ~ROW1_Pin;
+	HAL_Delay(5);
+
+	if((gpio->IDR & 0x2) == 0x0) return uint16_t(Direction::NORTH); // North
+
+	gpio->ODR |= allPinsHigh;
+	gpio->ODR &= ~ROW2_Pin;
+	HAL_Delay(5);
+
+	if((gpio->IDR & 0x1) == 0x0) return uint16_t(Direction::WEST); // Ouest
+	if((gpio->IDR & 0x4) == 0x0) return uint16_t(Direction::EAST); // Est
+	if((gpio->IDR & 0x8) == 0x0) return uint16_t(Direction::SOUTH); // Est
+//
+//	gpio->ODR |= allPinsHigh;
+//	gpio->ODR &= ~ROW3_Pin;
+//	HAL_Delay(5);
+//
+////	if((gpio->IDR & 0x200) == 0x0)
+////		return uint16_t(Direction::SOUTH); // SUD
+
+	return uint16_t(Direction::UNKNOWN);
+}
 /**
   * @}
   */ // End of documentation group ELE3312

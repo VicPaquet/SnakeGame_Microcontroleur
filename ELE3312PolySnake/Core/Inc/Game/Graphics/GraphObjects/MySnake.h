@@ -17,7 +17,8 @@ enum class Direction {
     NORTH = 0,
     EAST = 1,
     SOUTH = 2,
-    WEST = 3
+    WEST = 3,
+	UNKNOWN = 4
 };
 
 class MySnake : public GraphObject {
@@ -43,7 +44,7 @@ public:
     const std::vector<BodyPart>& getBody() const { return body; }
     uint16_t getLength() const { return 1 + body.size(); } // 1 pour la tête + taille du corps
     Direction getCurrentDirection() const { return currentDirection; }
-    Direction setDirection(Keypad* keypad) ;
+    void setDirection(Direction direction) ;
 
     
     // Getters pour les positions en grille
@@ -52,6 +53,9 @@ public:
     uint16_t getTailX() const;
     uint16_t getTailY() const;
     
+    Rect getOldTail() const { return oldTailPosition; }
+    void setOldTail(Rect rectangle) {oldTailPosition = rectangle; }
+
     // Méthodes utilitaires
     bool isPositionOccupied(uint16_t x, uint16_t y) const;
     bool checkCollision(uint16_t x, uint16_t y) const; // Vérifier collision avec le corps
@@ -63,6 +67,7 @@ private:
     // GraphObjects uniformes
     std::unique_ptr<Head> head;        // Objet tête
     std::vector<BodyPart> body;        // Objets corps
+    Rect oldTailPosition;
     
     // Méthodes privées
     bool isValidPosition(uint16_t x, uint16_t y) const; // Vérifier si une position est valide

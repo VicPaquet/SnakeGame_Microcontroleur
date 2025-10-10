@@ -246,6 +246,9 @@ void MySnake::moveBody() {
 
     
     // Déplacer chaque partie du corps vers la position de la partie précédente
+
+    Rect oldTail = body[body.size() - 1].getRect();
+    this->setOldTail(oldTail);
     for (int i = body.size() - 1; i > 0; i--) {
         uint16_t prevX = (body[i-1].getRect().getX1() - rect.getX1()) / 10;
         uint16_t prevY = (body[i-1].getRect().getY1() - rect.getY1()) / 10;
@@ -288,35 +291,7 @@ bool MySnake::isValidPosition(uint16_t x, uint16_t y) const {
 //Keypad* g_keypad = nullptr;
 //static GPIOKeypad s_keypadImpl; // instance concrète
 
-Direction MySnake::setDirection(Keypad* keypad) {
-    // Sécurité: si pas de keypad disponible, on ne change rien.
+void MySnake::setDirection(Direction direction) {
+	currentDirection = direction;
 
-    if (!keypad) {
-        return currentDirection;
-    }
-
-    // Lire la touche directionnelle (consomme les flags si une touche 2/4/6/8 est détectée)
-    KeyCode kc = keypad->getDirection();
-
-    // Par défaut: on garde la direction courante s’il n’y a rien de pertinent.
-    Direction newDir = currentDirection;
-
-    // Mapping demandé
-    switch (kc) {
-        case KeyCode::TWO:   newDir = Direction::NORTH; break; // 2 -> NORTH
-        case KeyCode::FOUR:  newDir = Direction::EAST;  break; // 4 -> EAST
-        case KeyCode::SIX:   newDir = Direction::WEST;  break; // 6 -> WEST
-        case KeyCode::EIGHT: newDir = Direction::SOUTH; break; // 8 -> SOUTH
-        default:
-            // Aucune touche directionnelle: ne rien changer.
-            return currentDirection;
-    }
-
-    // Interdire le demi-tour (180°)
-    Direction opposite = static_cast<Direction>((static_cast<int>(currentDirection) + 2) % 4);
-    if (newDir != opposite) {
-        currentDirection = newDir;
-    }
-
-    return currentDirection;
 }

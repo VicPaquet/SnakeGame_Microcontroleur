@@ -11,6 +11,8 @@
 #include "Interfaces/Display/Display.h"
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "Game/Graphics/GraphObjects/Fruit.h"
+#include "Interfaces/MotionInput/MotionInput.h"
+#include "NucleoImp/MotionInput/MPU6050MotionInput.h"
 #include "Interfaces/Display/Point.h"
 #include <vector>
 #include <memory>
@@ -32,7 +34,7 @@ enum class SnakeGameState {
 class SnakeGame{
 public:
 	SnakeGame();
-	void setup(Display *disp, Keypad *keypad); // Add MotionInput, Communication et Player Manager Class
+	void setup(Display *disp, Keypad *keypad, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
 
 	virtual ~SnakeGame();
 	bool run();
@@ -71,6 +73,7 @@ public:
 private:
 	Display *disp = nullptr;
 	Keypad *keypad = nullptr;
+	MotionInput *motionInput = nullptr;
 	//MotionInput *input = nullptr;
 	//Communication *comm = nullptr;
 	//PlayerManager *players = nullptr;
@@ -92,6 +95,7 @@ private:
 	// Helper functions
 	int randomRange(int min, int max);
 	bool isPositionFree(int x, int y);
+
 };
 
 #endif /* INC_GAME_SNAKEGAME_H_ */
