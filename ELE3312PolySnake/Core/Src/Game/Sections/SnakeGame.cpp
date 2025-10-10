@@ -81,7 +81,6 @@ void SnakeGame::initialize() {
     }
 }
 
-
 /** @brief Runs the snake game for a single frame.
   * @retval true The game has finished (game over).
   * @retval false The game continues.
@@ -115,17 +114,33 @@ bool SnakeGame::run() {
             if (checkboard) {
                 checkboard->update();
             }
-            
-            motionInput->update();
-            uint16_t acceleration = motionInput->getX();
-        	float sensibility = 0.1f;
-        	if ( ((acceleration > 0 && acceleration < sensibility) || ( acceleration < 0 && acceleration > - sensibility))) {
-        		return false;
-        	}
 
-            HAL_Delay(10000*acceleration);
+            //Modifier la vitesse depuis l'acc
+            if (motionInput) motionInput->update();
+            float ax;
+            if (motionInput) {
+                ax = motionInput->getX();
+            } else {
+                ax = 0.0f;
+            }
+
+            const uint32_t BASE_MS = 180;
+            const float    DEAD    = 0.07f;
+            const float    K       = 1.5f;
+            const uint32_t MIN_MS  = 60;
+            const uint32_t MAX_MS  = 400;
+
+            float a = abs(ax);
+            if (a < DEAD) a = 0.0f; else a -= DEAD;
+
+            float factor = 1.0f / (1.0f + K * a);
+
+            uint32_t delay_ms = (uint32_t)(BASE_MS * factor);
+            if (delay_ms < MIN_MS) delay_ms = MIN_MS;
+            if (delay_ms > MAX_MS) delay_ms = MAX_MS;
+
+            HAL_Delay(delay_ms);
             break;
-
     }
     return false; // Game continues
 }
