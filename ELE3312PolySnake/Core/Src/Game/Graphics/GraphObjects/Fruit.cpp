@@ -1,13 +1,8 @@
-/*
- * Fruit.cpp
- *
- *  Created on: Sep 29, 2025
- *      Author: vicpa
- */
-
 #include "Game/Graphics/GraphObjects/Fruit.h"
+#include "Game/Graphics/GraphObjects/Checkboard.h"
 #include "Interfaces/Display/Rect.h"
-#include "Resources/spriteData.h"
+#include <Resources/spriteData.h>
+#include "Game/Sections/SnakeGame.h"
 
 Fruit::Fruit() : 
     type(FruitType::APPLE),
@@ -39,9 +34,9 @@ void Fruit::initializeFruit(FruitType type, uint16_t gridX, uint16_t gridY) {
 void Fruit::draw() {
     if (!disp || !active) return;
     
-    // Utiliser les sprites existants au lieu de dessiner des carrés simples
-    uint16_t pixelX = gridX * 10 + rect.getX1();
-    uint16_t pixelY = gridY * 10 + rect.getY1();
+    // Utiliser les sprites
+    uint16_t pixelX = rect.getX1();
+    uint16_t pixelY = rect.getY1();
     
     Sprite* fruitSprite = getFruitSprite(type);
     if (fruitSprite) {
@@ -51,12 +46,20 @@ void Fruit::draw() {
 
 void Fruit::clear() {
     if (!disp) return;
-    
-    // Effacer la zone du fruit
-    uint16_t pixelX = gridX * 10 + rect.getX1();
-    uint16_t pixelY = gridY * 10 + rect.getY1();
-    Rect fruitRect(pixelX, pixelY, pixelX + 10, pixelY + 10);
-    disp->fillRect(Color::BLACK, fruitRect);
+
+    Sprite* sprite = getFruitSprite(type);
+    if (!sprite) return;
+
+    uint16_t width = sprite->getWidth();
+    uint16_t height = sprite->getHeight();
+
+    Rect fruitRect(rect.getX1(), rect.getY1(),
+                   rect.getX1() + width, rect.getY1() + height);
+
+    if ((gridX + gridY) % 2 == 0)
+        disp->fillRect(Color::WHITE, fruitRect);
+    else
+        disp->fillRect(Color::LIGHTGREY, fruitRect);
 }
 
 void Fruit::setGridPosition(uint16_t x, uint16_t y) {
@@ -86,7 +89,7 @@ Color Fruit::getFruitColor(FruitType type) {
         case FruitType::APPLE:
             return Color::RED;
         case FruitType::BANANA:
-            return Color::YELLOW;
+            return Color::BLUE;
         default:
             return Color::WHITE;
     }
@@ -116,21 +119,14 @@ Sprite* Fruit::getFruitSprite(FruitType type) {
 
 void Fruit::updatePixelPosition() {
     // Convertir les coordonnées de grille en pixels
-    uint16_t pixelX = gridX * 10 + rect.getX1();
-    uint16_t pixelY = gridY * 10 + rect.getY1();
+    uint16_t pixelX = gridX * 10+rect.getX1();
+    uint16_t pixelY = gridY * 10+rect.getY1();
     
     // Mettre à jour le rectangle de position
     rect.setX1(pixelX);
     rect.setY1(pixelY);
     rect.setX2(pixelX + 10);
     rect.setY2(pixelY + 10);
-}
-
-void Fruit::drawFruitSprite() {
-    if (!disp || !active) return;
-    
-    // Cette méthode n'est plus utilisée car on utilise maintenant drawSprite()
-    // avec les sprites définis dans spriteData.h
 }
 
 void Fruit::drawSprite(uint16_t x, uint16_t y, Sprite *sprite) const {
@@ -145,7 +141,7 @@ void Fruit::drawSprite(uint16_t x, uint16_t y, Sprite *sprite) const {
     for (uint16_t py = 0; py < height; ++py) {
         for (uint16_t px = 0; px < width; ++px) {
             uint16_t pixelColor = data[py * width + px];
-            if (pixelColor != 20) { // Ne pas dessiner les pixels transparents
+            if (pixelColor != 20) { // Ne pas dessiner les pixels transparents (c'est comme un pixel transparent
                 disp->drawPixel(static_cast<Color>(pixelColor), x + px, y + py);
             }
         }

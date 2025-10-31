@@ -6,6 +6,8 @@
 "./Core/Src/Game/Graphics/GraphObjects/MySnake.o"
 "./Core/Src/Game/Graphics/GraphObjects.o"
 "./Core/Src/Game/Sections/SnakeGame.o"
+"./Core/Src/Game/Sections/implem_fruits_coli.o"
+"./Core/Src/Game/Sections/implem_self_coli.o"
 "./Core/Src/Interfaces/Display/Point.o"
 "./Core/Src/Interfaces/Display/Rect.o"
 "./Core/Src/Interfaces/Display/Sprite.o"

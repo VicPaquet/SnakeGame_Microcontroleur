@@ -98,7 +98,7 @@ void Checkboard::draw(){
 			}
 		}
 	}
-	// Note: update() is called separately after snake and fruits are initialized
+
 }
 
 void Checkboard::update(){

@@ -17,13 +17,13 @@
 #include <vector>
 #include <memory>
 
-// Forward declaration to avoid circular dependency
+// Pour éviter la dépendance circulaire avec checkboard
 class Checkboard;
 
-#define MAX_FRUITS 10
-#define MAX_SNAKE_LENGTH 101
-#define BOARD_WIDTH 32   // 32 tuiles de 10x10 = 320 pixels
-#define BOARD_HEIGHT 24  // 24 tuiles de 10x10 = 240 pixels
+#define MAX_FRUITS 3		  // Nombre de fruits max qui peuvent apparaitre au début
+#define MAX_SNAKE_LENGTH 10   // Longueur max que peut avoir le serpent
+#define BOARD_WIDTH 32   	  // 32 tuiles de 10x10 = 320 pixels
+#define BOARD_HEIGHT 24  	  // 24 tuiles de 10x10 = 240 pixels
 #define NUMBER_OF_DIRECTION 4 // Pour générer une direction aléatoire
 
 
@@ -35,33 +35,30 @@ class SnakeGame{
 public:
 	SnakeGame();
 	void setup(Display *disp, Keypad *keypad, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
-
 	virtual ~SnakeGame();
-	bool run();
-	//void handleRemote(SnakeGameMessage msg);
 
-    // Getters pour le nouveau système
+	//void handleRemote(SnakeGameMessage msg); -> sera ajouté plus tard si beoin
+
+    // ===== Getters =====
     MySnake* getMySnake() const { return mySnake.get(); }
-    Keypad* getKeypad() const { return keypad; }
+    Keypad* getKeypad() const   { return keypad; }
+    int getFruitCount() const 	{ return fruit_count; }
+    Head* getHead() const	    { return mySnake ? mySnake->getHead() : nullptr; }
+
     const std::vector<std::unique_ptr<Fruit>>& getFruits() const { return fruits; }
-    int getFruitCount() const { return fruit_count; }
-    
-    // Getters utilise MySnake
-    Head* getHead() const { 
-        return mySnake ? mySnake->getHead() : nullptr; 
-    }
     const std::vector<BodyPart>& getBody() const { 
         static std::vector<BodyPart> emptyBody;
         return mySnake ? mySnake->getBody() : emptyBody; 
     }
     
+    // Méthode principales
 	void restart();
-	
-	// Public initialization methods
+	bool run();
+	void initialize();
 	void initializeSnake();
 	void initializeFruits();
 	
-	// Méthodes de contrôle du serpent selon les spécifications du labo
+	// Méthodes de contrôle du serpent
 	void moveSnake(int eat = 0);  // Faire avancer le serpent
 	void turnSnakeLeft();         // Tourner à gauche
 	void turnSnakeRight();        // Tourner à droite
@@ -70,7 +67,15 @@ public:
 	bool checkFruitCollision();   // Vérifier collision avec fruits
 	bool checkWallCollision();    // Vérifier collision avec murs
 	bool checkSelfCollision();    // Vérifier collision avec le corps
+
+	// Méthodes d'aide
+	int randomRange(int min, int max);
+	bool isPositionFree(int x, int y);
+	void generateNewFruit();
+	uint32_t computeDelayFromAccel(MotionInput* motionInput);
+
 private:
+	// Périphériques
 	Display *disp = nullptr;
 	Keypad *keypad = nullptr;
 	MotionInput *motionInput = nullptr;
@@ -79,23 +84,16 @@ private:
 	//PlayerManager *players = nullptr;
     
     // Système principal avec MySnake et Fruit GraphObjects
-    std::unique_ptr<MySnake> mySnake;    // Le serpent principal
-    std::vector<std::unique_ptr<Fruit>> fruits; // Les fruits comme GraphObjects
-    
+    std::unique_ptr<MySnake> mySnake;   	    // Le serpent (est un GraphObjects)
+    std::vector<std::unique_ptr<Fruit>> fruits; // Les fruits (sont des GraphObjects)
     std::unique_ptr<Checkboard> checkboard;
     bool newCheckboard = true;
     bool fruitEncountered;
     int fruit_count;
     int score;
 
+    // État du système
     SnakeGameState state = SnakeGameState::Initialization;
-
-	void initialize();
-	
-	// Helper functions
-	int randomRange(int min, int max);
-	bool isPositionFree(int x, int y);
-
 };
 
 #endif /* INC_GAME_SNAKEGAME_H_ */

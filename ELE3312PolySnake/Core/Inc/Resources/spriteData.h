@@ -8,6 +8,7 @@
 
 // === Couleurs en RGB565 ===
 #define COLOR_TRANSPARENT 20  // noir (ou transparent)
+#define COLOR_BLUE		  9
 #define COLOR_WHITE       15
 #define COLOR_GRAY        7
 #define COLOR_GREEN       10

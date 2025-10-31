@@ -8,7 +8,10 @@
  * selon les spécifications du laboratoire ELE3312.
  */
 
+
+#include "Game/Sections/SnakeGame.h"
 #include "Game/Graphics/GraphObjects/MySnake.h"
+#include "Game/Graphics/GraphObjects/Fruit.h"
 #include "Interfaces/Display/Rect.h"
 #include "Resources/spriteData.h"
 #include "Interfaces/Keypad/Keypad.h"
@@ -75,6 +78,7 @@ void MySnake::initializeSnake(uint16_t startX, uint16_t startY, Direction startD
 
 void MySnake::move(int eat) {
     if (!head || !disp) return;
+
     // Déplacer la tête dans la direction courante
     moveHead(currentDirection);
     
