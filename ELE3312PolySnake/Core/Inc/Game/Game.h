@@ -19,9 +19,9 @@
 #include "NucleoImp/MotionInput/MPU6050MotionInput.h"
 #include "NucleoImp/RGBLight/RGBLED.h"
 #include "Game/Sections/SnakeGame.h"
-//#include "NucleoImp/SerialCom/UART.h"
+#include "NucleoImp/SerialCom/UART.h"
 //#include "NucleoImp/Sound/DACSound.h"
-//#include "NucleoImp/SerialCom/Ringbuffer.h"
+#include "NucleoImp/SerialCom/Ringbuffer.h"
 //#include "Game/Sections/Menu.h"
 //#include "Game/Sections/Combat.h"
 //#include "Game/Sections/LabyrinthGame.h"
@@ -62,6 +62,7 @@ void main_run(peripheral_handles *handlers) ;
 		void handleUART(uint8_t *data, uint16_t size);
 	private:
 		peripheral_handles *handles = nullptr;
+
 		// Peripherals
 		static ADCInput adcInput;
 		static MPU6050MotionInput motionInput;
@@ -69,9 +70,16 @@ void main_run(peripheral_handles *handlers) ;
 		static HCSR04Distance distance;
 		static GPIOKeypad keypad;
 		static RGBLED rgbLed;
+		static UART uart;
 
 		static SnakeGame snakeGame;
-		//static UART uart;
+
+
+		// Uart
+		static Ringbuffer uartBuffer;
+		static uint8_t buff[];
+
+
 		//static DACSound sound;
 		// Players
 		//static PlayerManager players; not used yet
@@ -83,8 +91,7 @@ void main_run(peripheral_handles *handlers) ;
 		*/
 		// State
 		//GameState state = GameState::Menu;
-		// uart
-		//Ringbuffer uartBuffer;
+
 
 	};
 	#ifdef __cplusplus

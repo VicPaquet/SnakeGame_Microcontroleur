@@ -26,7 +26,8 @@ SnakeGame::SnakeGame() :
 
 SnakeGame::~SnakeGame() {}
 
-void SnakeGame::setup(Display *disp, Keypad *keypad, MotionInput *motionInput) {
+void SnakeGame::setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput *motionInput) {
+	this->comm = comm;
 	this->motionInput = motionInput;
 	this->disp = disp;
 	this->keypad = keypad;

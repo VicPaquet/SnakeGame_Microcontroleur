@@ -8,7 +8,7 @@
 
 #include "Game/Game.h"
 #include "Game/Sections/SnakeGame.h"
-//#include "NucleoImp/SerialCom/SerialFrame.h"
+#include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/RGBLight/RGBLED.h"
 #include "NucleoImp/AnalogInput/ADCInput.h"
 #include "NucleoImp/Keypad/GPIOKeypad.h"
@@ -20,8 +20,9 @@ ILI9341Display Game::display;
 HCSR04Distance Game::distance;
 GPIOKeypad Game::keypad;
 RGBLED Game::rgbLed;
+UART Game::uart;
+
 SnakeGame Game::snakeGame;
-//UART Game::uart;
 //DACSound Game::sound;
 // Players
 //PlayerManager Game::players;
@@ -32,9 +33,12 @@ LabyrinthGame Game::labyrinth;
 Combat Game::combat;
 VictoryScreen Game::victoryScreen;
 */
-Game::Game(){
 
-}
+// uart
+Ringbuffer Game::uartBuffer;
+uint8_t Game::buff[BUFFER_SIZE]= {0};
+
+Game::Game(){}
 
 /** @brief Constructor for the Game class.
   * @details The constructor creates a game object that encapsulates all aspects of the game.
@@ -45,13 +49,15 @@ void Game::setup(peripheral_handles *handles) {
 	 this->handles = handles;
 	 //sound.setup(handles->hdac, handles->htim_dac, 84000000UL);
 	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
+
 	 motionInput.setup(handles->hi2c);
 	 snakeGame.setup(&display, &keypad,&motionInput);
 	 keypad.setup(handles->gpio_keypad);
 	 display.setup(handles->hspi_tft);
 	 display.clearScreen();
-	 //uart.setup(handles->huart, 5);
+	 uart.setup(handles->huart, 5);
 
+	 uartBuffer.setup();
 	 /*
 	 display.setup(handles->hspi_tft);
 	 //rgbLed.setup(handles->htim_led, TIM_CHANNEL_2, TIM_CHANNEL_3, TIM_CHANNEL_4);

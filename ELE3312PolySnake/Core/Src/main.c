@@ -31,6 +31,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define RX_BUFFER_SIZE 1
+#define GAME_DELAY_COUNT 20
 
 /* USER CODE END PD */
 
@@ -62,6 +64,13 @@ DMA_HandleTypeDef hdma_uart5_rx;
 DMA_HandleTypeDef hdma_uart5_tx;
 
 /* USER CODE BEGIN PV */
+uint8_t rx_buffer_USB[RX_BUFFER_SIZE];
+uint8_t rx_buffer[RX_BUFFER_SIZE];
+volatile uint32_t systick_count = 0;
+volatile uint32_t victory_screen_delay = 0;
+volatile uint16_t game_delay = 0;
+volatile uint16_t game_delay_flag = 0;
+
 
 /* USER CODE END PV */
 
@@ -770,12 +779,49 @@ static void MX_GPIO_Init(void)
 /** @brief Systick callback.
   */
 
-// Prevent warning: _getentropy is not implemented
-int getentropy(void *buffer, size_t length)
-{
-  return -1;
+/** @brief Capture callback for a timer used to measure time difference
+  * between rising and falling edge of an digital external input signal.
+  * @param [in] htim Pointer to timer periphery handle.
+  */
+
+//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+//	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) 	{
+//	  captureCallback(htim);
+//	}
+//}
+
+/** @brief UART receive complete callback. Here we read the incoming message byte by byte.
+  * @param [in] huart Pointer to the UART interface handle.
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+  handleUART(huart->Instance->DR);
+  if (huart->Instance == USART2) {  /* Check which UART triggered the interrupt */
+    /* Start the next reception */
+    HAL_UART_Receive_IT(huart, rx_buffer_USB, RX_BUFFER_SIZE);
+  }
+  if(huart->Instance == UART5){
+    /* Start the next reception */
+    HAL_UART_Receive_IT(huart, rx_buffer, RX_BUFFER_SIZE);
+  }
 }
-/* USER CODE END 4 */
+
+/** @brief Systick callback.
+  */
+void HAL_SYSTICK_Callback(){
+  systick_count += 1;
+  if (game_delay ==  0) {
+	  game_delay = GAME_DELAY_COUNT;
+	  game_delay_flag = 1;
+  }
+  game_delay--;
+}
+
+// Prevent warning: _getentropy is not implemented
+//int getentropy(void *buffer, size_t length)
+//{
+//  return -1;
+//}
+///* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -791,6 +837,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
+
 #ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number

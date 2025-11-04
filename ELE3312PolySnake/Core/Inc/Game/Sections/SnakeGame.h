@@ -79,8 +79,8 @@ private:
 	Display *disp = nullptr;
 	Keypad *keypad = nullptr;
 	MotionInput *motionInput = nullptr;
-	//MotionInput *input = nullptr;
-	//Communication *comm = nullptr;
+	Communication *comm = nullptr;
+
 	//PlayerManager *players = nullptr;
     
     // Système principal avec MySnake et Fruit GraphObjects

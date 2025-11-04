@@ -61,7 +61,11 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/NucleoImp/Distance/HCSR04Distance.h \
  ../Core/Inc/Interfaces/Distance/Distance.h \
  ../Core/Inc/NucleoImp/RGBLight/RGBLED.h \
- ../Core/Inc/Interfaces/RGBLight/RGBLight.h
+ ../Core/Inc/Interfaces/RGBLight/RGBLight.h \
+ ../Core/Inc/NucleoImp/SerialCom/UART.h \
+ ../Core/Inc/Interfaces/Communication/Communication.h \
+ ../Core/Inc/Interfaces/Communication/Message.h \
+ ../Core/Inc/NucleoImp/SerialCom/Ringbuffer.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -128,3 +132,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Interfaces/Distance/Distance.h:
 ../Core/Inc/NucleoImp/RGBLight/RGBLED.h:
 ../Core/Inc/Interfaces/RGBLight/RGBLight.h:
+../Core/Inc/NucleoImp/SerialCom/UART.h:
+../Core/Inc/Interfaces/Communication/Communication.h:
+../Core/Inc/Interfaces/Communication/Message.h:
+../Core/Inc/NucleoImp/SerialCom/Ringbuffer.h:

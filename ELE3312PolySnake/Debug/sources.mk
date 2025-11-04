@@ -38,10 +38,12 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/Src/Game/ComMessage \
 Core/Src/Game \
 Core/Src/Game/Graphics/GraphObjects \
 Core/Src/Game/Graphics \
 Core/Src/Game/Sections \
+Core/Src/Interfaces/Communication \
 Core/Src/Interfaces/Display \
 Core/Src/NucleoImp/AnalogInput \
 Core/Src/NucleoImp/Display \
@@ -49,6 +51,7 @@ Core/Src/NucleoImp/Distance \
 Core/Src/NucleoImp/Keypad \
 Core/Src/NucleoImp/MotionInput \
 Core/Src/NucleoImp/RGBLight \
+Core/Src/NucleoImp/SerialCom \
 Core/Src/Resources \
 Core/Src \
 Core/Startup \

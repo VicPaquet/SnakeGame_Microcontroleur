@@ -38,6 +38,9 @@ extern "C" {
   * peripherals used in the game.
   */
 void cpp_main(peripheral_handles *handles) ;
+void  handleUART(uint8_t data) ;
+
+//void captureCallback(TIM_HandleTypeDef *htim);
 
 #ifdef __cplusplus
 }

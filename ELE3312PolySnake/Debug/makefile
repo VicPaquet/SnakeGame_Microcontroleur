@@ -12,6 +12,7 @@ RM := rm -rf
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/Resources/subdir.mk
+-include Core/Src/NucleoImp/SerialCom/subdir.mk
 -include Core/Src/NucleoImp/RGBLight/subdir.mk
 -include Core/Src/NucleoImp/MotionInput/subdir.mk
 -include Core/Src/NucleoImp/Keypad/subdir.mk
@@ -19,9 +20,11 @@ RM := rm -rf
 -include Core/Src/NucleoImp/Display/subdir.mk
 -include Core/Src/NucleoImp/AnalogInput/subdir.mk
 -include Core/Src/Interfaces/Display/subdir.mk
+-include Core/Src/Interfaces/Communication/subdir.mk
 -include Core/Src/Game/Sections/subdir.mk
 -include Core/Src/Game/Graphics/GraphObjects/subdir.mk
 -include Core/Src/Game/Graphics/subdir.mk
+-include Core/Src/Game/ComMessage/subdir.mk
 -include Core/Src/Game/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk

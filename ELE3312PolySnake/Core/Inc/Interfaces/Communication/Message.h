@@ -14,10 +14,9 @@
 #include <cstdint>
 #include <string>
 
-	/** A MessageType describes the purpose of a message.
-	  */
+
 	enum class MessageType{
-		Ack,NAck, PlayerChoice, Position, PowerValue, Winner, Ready, Data, Text, Unknown
+		Ack,NAck, PlayerChoice, Position, Ready, Data, Text, Unknown
 	};
 	/** @brief Abstract class that defines the interface of a message.
 	  */
@@ -40,7 +39,5 @@
 	};
 
 
-/**
-  * @}
-  */ // End of documentation group ELE3312
+
 #endif

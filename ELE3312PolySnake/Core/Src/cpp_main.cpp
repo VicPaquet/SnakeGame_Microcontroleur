@@ -16,34 +16,39 @@
 #include "Game/Sections/SnakeGame.h"
 #include "Game/Game.h"
 
+Game *p_game = nullptr;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+void  handleUART(uint8_t data) {
+	if (p_game != nullptr){
+		p_game->handleUART(data);
+	}
+}
+
+void handleUARTData(uint8_t *data, uint16_t size){
+	if(p_game != nullptr){
+		p_game->handleUART(data, size);
+	}
+}
+
+
+#ifdef __cplusplus
+}
+#endif
+
+
 // Instance globale du jeu Snake
 
+//TIM_HandleTypeDef *distance_timer_handle;
 ILI9341Display display;
-
-
-/**
- * brief Fonction principale pour tester la génération du snake
- */
+Game game;
 
 void cpp_main(peripheral_handles *handles) {
-    // Afficher le titre du test
-    display.drawString(20, 100, "PolySnake - Test Generation", Color::WHITE);
-    HAL_Delay(2000);
-    
-    // Configurer le jeu Snake avec l'affichage
-    Game game;
+	//distance_timer_handle = handles->htim_distance;
     game.setup(handles);
-    game.run();
-
-
-    
-//    // Attendre un peu pour voir le résultat
-//    HAL_Delay(5000);
-//
-//    // Optionnel: redémarrer le jeu pour tester
-//    display.drawString(20, 120, "Redemarrage...", Color::WHITE);
-//    HAL_Delay(1000);
-//
-//    snakeGame.restart();
-//    snakeGame.run();
+	p_game = &game;
+	game.run();
 }
