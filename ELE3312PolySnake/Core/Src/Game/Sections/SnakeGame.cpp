@@ -8,18 +8,22 @@
 #include <cstdlib>
 #include <ctime>
 #include "Game/Graphics/GraphObjects/MySnake.h"
+#include "NucleoImp/SerialCom/SerialFrame.h"
+#include "Game/ComMessages/SnakeGameMessage.h"
 
 
-SnakeGame::SnakeGame() : 
+SnakeGame::SnakeGame() :
     fruitEncountered(false),
     fruit_count(0),
     score(0),
-    state(SnakeGameState::Initialization) {
+    state(SnakeGameState::Initialization),
+    uartBuffer() {
 
     // Initialiser avec des unique_ptr
     checkboard = std::make_unique<Checkboard>();
     mySnake = std::make_unique<MySnake>();
-    
+    snakeOpponent = std::make_unique<MySnake>();
+
     // Seed aléatoire
     srand(9 * HAL_GetTick());
 }
@@ -27,24 +31,56 @@ SnakeGame::SnakeGame() :
 SnakeGame::~SnakeGame() {}
 
 void SnakeGame::setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput *motionInput) {
-	this->comm = comm;
-	this->motionInput = motionInput;
-	this->disp = disp;
-	this->keypad = keypad;
-	fruitEncountered = false;
+    this->comm = comm;
+    this->motionInput = motionInput;
+    this->disp = disp;
+    this->keypad = keypad;
+    fruitEncountered = false;
     fruit_count = 0;
     score = 0;
-    
-    // Setup la classe le checkboard qui est le background d'affichage du jeu s'il n'existe pas encore (crée un graphObject)
+
+    // Setup le checkboard
     if (checkboard && disp) {
         Rect gameArea{0, 0, disp->getScreenWidth(), disp->getScreenHeight()};
         checkboard->setup(gameArea, disp, this);
     }
-    
-    // Setup la classe mySnake s'il n'existe pas encore (crée un graphObject)
+
+    // Setup le serpent local
     if (mySnake && disp) {
         Rect gameArea{0, 0, disp->getScreenWidth(), disp->getScreenHeight()};
         mySnake->setup(gameArea, disp);
+    }
+
+    // Setup le serpent adverse
+    snakeOpponent = std::make_unique<MySnake>();
+    if (snakeOpponent && disp) {
+        Rect gameArea{0, 0, disp->getScreenWidth(), disp->getScreenHeight()};
+        snakeOpponent->setup(gameArea, disp);
+    }
+}
+
+void SnakeGame::sendSnakePosition() {
+	if (!comm) return;
+
+    SnakeGameMessage msg(mySnake->getHeadX(),
+    		mySnake->getHeadY(), cType);
+    comm->send(&msg);
+}
+
+void SnakeGame::handleRemote(SnakeGameMessage msg) {
+    switch(msg.getType()) {
+        case MessageType::Position:
+            updateOpponentSnake(msg.getX(), msg.getY());
+            // msg.getCollisionType()
+            break;
+        default:
+        	break;
+    }
+}
+
+void SnakeGame::updateOpponentSnake(uint8_t x, uint8_t y) {
+    if (snakeOpponent) {
+        snakeOpponent->setHeadPosition(x, y);
     }
 }
 
@@ -56,13 +92,13 @@ void SnakeGame::initialize() {
         newCheckboard = false;
     }
     fruitEncountered = false;
-    
+
     // Initialise le
     initializeSnake();
-    
+
     // Initialize fruits
     initializeFruits();
-    
+
     // Update the display to show the snake and fruits
     if (checkboard) {
         checkboard->update();
@@ -77,31 +113,47 @@ bool SnakeGame::run() {
             break;
             
         case SnakeGameState::Run:
-        	// On va chercher la direction du keypad
-        	Direction direction = Direction(keypad->getDirection());
+            // Check UART and dispatch messages
+            if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+                frame.setMessage(buff, BUFFER_SIZE);
 
-        	// On vient setter la nouvelle direction si c'est une nouvelle direction
-        	if (direction != Direction::NORTH && direction !=  Direction::SOUTH  && direction != Direction::EAST && direction != Direction::WEST){
-        		direction = mySnake->getCurrentDirection();
-        		mySnake->setDirection(direction);
-        	}
-        	else{
-        		mySnake->setDirection(direction);
-        	}
+                switch (frame.getMessageType()) {
+                    case MessageType::Position:
+                        handleRemote(frame.getSnakeGameMessage());
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-        	// On bouge le snake
-        	moveSnake(0); // eat = 0 pour un mouvement normal
-            
-            // Mettre à jour l'affichage du Checkboard
+            // Gestion des entrées du serpent local
+            Direction direction = Direction(keypad->getDirection());
+            if (direction != Direction::UNKNOWN) {
+                mySnake->setDirection(direction);
+            }
+
+            // Mouvement du serpent local
+            moveSnake(0);
+
+            // Envoyer la position à l'autre microcontrôleur
+            sendSnakePosition();
+
+            // Mettre à jour l'affichage
             if (checkboard) {
                 checkboard->update();
             }
 
-            //Modifier la vitesse depuis l'accelerometre
+            // Dessiner le serpent adverse
+            if (snakeOpponent) {
+                snakeOpponent->draw();
+            }
+
+            // Délai basé sur l'accéléromètre
             uint32_t delay_ms = computeDelayFromAccel(motionInput);
             HAL_Delay(delay_ms);
+            break;
     }
-    return false; // Game continues
+    return false;
 }
 
 /** @brief Restarts the snake game.
@@ -112,12 +164,12 @@ void SnakeGame::restart() {
     fruit_count = 0;
     score = 0;
     state = SnakeGameState::Initialization;
-    
+
     // Reset MySnake
     if (mySnake) {
         mySnake->reset();
     }
-    
+
     // Clear fruits
     fruits.clear();
 }
@@ -131,7 +183,7 @@ bool SnakeGame::isPositionFree(int x, int y) {
     if (mySnake && mySnake->isPositionOccupied(x, y)) {
         return false;
     }
-    
+
     // Vérifier les fruits
     for (const auto& fruit : fruits) {
         if (fruit->isActive() && fruit->isAtPosition(x, y)) {
@@ -148,13 +200,13 @@ void SnakeGame::initializeSnake() {
         // Position de départ aléatoire mais valide (au moins 5 cases des bordures)
         int start_x = randomRange(5, BOARD_WIDTH - 5);
         int start_y = randomRange(5, BOARD_HEIGHT - 5);
-        
+
         // Longueur initiale du serpent (entre 3 et 10 tuiles)
         int initial_length = randomRange(3, MAX_SNAKE_LENGTH);
-        
+
         // Direction initiale aléatoire
         Direction start_direction = static_cast<Direction>(randomRange(0, 3));
-        
+
         // Initialiser le serpent
         mySnake->initializeSnake(start_x, start_y, start_direction, initial_length);
     }
@@ -164,7 +216,7 @@ void SnakeGame::initializeFruits() {
     // Vider les fruits existants s'il y en a
     fruits.clear();
     fruit_count = randomRange(1, MAX_FRUITS); // Entre 1 et 10 fruits
-    
+
     for (int i = 0; i < fruit_count; i++) {
     	generateNewFruit();
     }
@@ -172,10 +224,10 @@ void SnakeGame::initializeFruits() {
 
 void SnakeGame::moveSnake(int eat) {
     if (!mySnake) return;
-    
+
     // Faire avancer le serpent: cela bouge le mySnake dans le vecteurs (update le vecteur)
     mySnake->move(eat);
-    
+
     if (checkFruitCollision()) {
         mySnake->move(1); // eat = 1 pour faire grandir le serpent si on a collision avec un fruit
         score += 10;      // Pas encore de logique de pointage, peut être utile pour la suite
@@ -185,7 +237,7 @@ void SnakeGame::moveSnake(int eat) {
             snake->draw();
         }
     }
-    
+
     if (checkWallCollision() || checkSelfCollision()) {
         // Game over
         restart();
@@ -238,10 +290,10 @@ void SnakeGame::generateNewFruit(){
 
 bool SnakeGame::checkWallCollision() {
     if (!mySnake) return false;
-    
+
     uint16_t headX = mySnake->getHeadX();
     uint16_t headY = mySnake->getHeadY();
-    
+
     // Vérifier les limites de l'écran
     return (headX >= BOARD_WIDTH || headY >= BOARD_HEIGHT);
 }
@@ -290,4 +342,3 @@ uint32_t SnakeGame::computeDelayFromAccel(MotionInput* motionInput)
 
     return delay_ms;
 }
-

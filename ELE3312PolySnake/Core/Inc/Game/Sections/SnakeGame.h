@@ -9,11 +9,15 @@
 #define INC_GAME_SNAKEGAME_H_
 
 #include "Interfaces/Display/Display.h"
+#include "Game/ComMessages/SnakeGameMessage.h"
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "Game/Graphics/GraphObjects/Fruit.h"
 #include "Interfaces/MotionInput/MotionInput.h"
+#include "Interfaces/Communication/Communication.h"
 #include "NucleoImp/MotionInput/MPU6050MotionInput.h"
 #include "Interfaces/Display/Point.h"
+#include "NucleoImp/SerialCom/SerialFrame.h"
+#include "NucleoImp/SerialCom/Ringbuffer.h"
 #include <vector>
 #include <memory>
 
@@ -31,13 +35,20 @@ enum class SnakeGameState {
 	Initialization, Run
 };
 
+
+#define UART_BUFFER_SIZE 32
+
 class SnakeGame{
 public:
 	SnakeGame();
-	void setup(Display *disp, Keypad *keypad, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
+	void setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
 	virtual ~SnakeGame();
 
-	//void handleRemote(SnakeGameMessage msg); -> sera ajouté plus tard si beoin
+	// ===== Communication =====
+	void handleRemote(SnakeGameMessage msg);
+	void sendSnakePosition();
+	void processUARTMessage(uint8_t* data, size_t size);
+    void updateOpponentSnake(uint8_t x, uint8_t y);
 
     // ===== Getters =====
     MySnake* getMySnake() const { return mySnake.get(); }
@@ -94,6 +105,18 @@ private:
 
     // État du système
     SnakeGameState state = SnakeGameState::Initialization;
+    CollisionType cType = CollisionType::None;
+
+    // Ajout du serpent adversaire
+    std::unique_ptr<MySnake> snakeOpponent;
+    bool is_master;  // Indique si ce microcontrôleur est le maître
+
+    // Communication UART
+    static constexpr size_t BUFFER_SIZE = 32;
+    uint8_t buff[BUFFER_SIZE];
+    Ringbuffer uartBuffer;  // Buffer circulaire pour UART
+    SerialFrame frame;      // Pour gérer les messages
+    
 };
 
 #endif /* INC_GAME_SNAKEGAME_H_ */

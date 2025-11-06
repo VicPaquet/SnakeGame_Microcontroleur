@@ -53,6 +53,8 @@ public:
     uint16_t getTailX() const;
     uint16_t getTailY() const;
     
+    void setHeadPosition(uint16_t x, uint16_t y); // Nouvelle méthode pour positionner la tête
+    
     Rect getOldTail() const { return oldTailPosition; }
     void setOldTail(Rect rectangle) {oldTailPosition = rectangle; }
 

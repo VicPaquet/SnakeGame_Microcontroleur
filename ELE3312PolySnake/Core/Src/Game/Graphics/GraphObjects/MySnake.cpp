@@ -299,3 +299,22 @@ void MySnake::setDirection(Direction direction) {
 	currentDirection = direction;
 
 }
+
+void MySnake::setHeadPosition(uint16_t x, uint16_t y) {
+    if (!head || !disp) return;
+    
+    // Conversion des coordonnées de grille en pixels
+    uint16_t pixelX = x * 10 + rect.getX1();
+    uint16_t pixelY = y * 10 + rect.getY1();
+    
+    // Créer un nouveau rectangle pour la position de la tête
+    Rect headRect(pixelX, pixelY, pixelX + 10, pixelY + 10);
+    
+    // Sauvegarder l'ancienne position pour la mise à jour du corps
+    if (head) {
+        head->setOldHead(getHeadX(), getHeadY());
+    }
+    
+    // Mettre à jour la position de la tête
+    head->setPosition(pixelX, pixelY);
+}

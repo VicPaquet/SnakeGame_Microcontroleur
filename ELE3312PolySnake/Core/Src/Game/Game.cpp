@@ -51,7 +51,7 @@ void Game::setup(peripheral_handles *handles) {
 	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
 
 	 motionInput.setup(handles->hi2c);
-	 snakeGame.setup(&display, &keypad,&motionInput);
+	 snakeGame.setup(&display,&keypad, &uart, &motionInput);
 	 keypad.setup(handles->gpio_keypad);
 	 display.setup(handles->hspi_tft);
 	 display.clearScreen();
@@ -161,7 +161,7 @@ void Game::run(){
   * @param [in] data A byte of data received from the serial interface.
   */
 void Game::handleUART(uint8_t data){
-	// uartBuffer.write(&data, 1);
+	uartBuffer.write(&data, 1);
 }
 
 /** @brief Method that takes data provided by the uart interrupt.
@@ -171,7 +171,7 @@ void Game::handleUART(uint8_t data){
   * @param [in] size The number of bytes in the buffer to be written.
   */
 void Game::handleUART(uint8_t *data, uint16_t size){
-	// uartBuffer.write(data, size);
+	uartBuffer.write(data, size);
 }
 
 
