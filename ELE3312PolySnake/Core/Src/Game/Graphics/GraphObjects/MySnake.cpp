@@ -63,6 +63,8 @@ void MySnake::initializeSnake(uint16_t startX, uint16_t startY, Direction startD
             case Direction::WEST:
                 currentX--;
                 break;
+            default:
+				break;
         }
         
         // Créer une nouvelle partie du corps
@@ -234,6 +236,8 @@ void MySnake::moveHead(Direction direction) {
         case Direction::WEST:
             newX--;
             break;
+        default:
+        	break;
     }
     
     // Vérifier si la nouvelle position est valide

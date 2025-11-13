@@ -1,4 +1,5 @@
 "./Core/Src/Game/ComMessage/SnakeGameMessage.o"
+"./Core/Src/Game/ComMessage/handShakeMessage.o"
 "./Core/Src/Game/Game.o"
 "./Core/Src/Game/Graphics/GraphObjects/BodyPart.o"
 "./Core/Src/Game/Graphics/GraphObjects/Checkboard.o"

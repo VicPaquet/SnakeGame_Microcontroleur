@@ -9,7 +9,9 @@
 #include <ctime>
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "NucleoImp/SerialCom/SerialFrame.h"
+#include "NucleoImp/SerialCom/UART.h"
 #include "Game/ComMessages/SnakeGameMessage.h"
+#include "Game/Game.h" // Added include for the global Game::uartBuffer
 
 
 SnakeGame::SnakeGame() :
@@ -67,7 +69,7 @@ void SnakeGame::sendSnakePosition() {
     comm->send(&msg);
 }
 
-void SnakeGame::handleRemote(SnakeGameMessage msg) {
+void SnakeGame::handleRemoteSnakeGame(SnakeGameMessage msg) {
     switch(msg.getType()) {
         case MessageType::Position:
             updateOpponentSnake(msg.getX(), msg.getY());
@@ -105,21 +107,98 @@ void SnakeGame::initialize() {
     }
 }
 
+void SnakeGame::waitForSyncAndGetSeed() {
+    uint32_t seed = 0;
+    bool is_master = false;
+    bool shouldExit = false;
+
+    // Réinitialisation explicite du keypad et délai pour stabilisation
+    keypad->update();
+    HAL_Delay(100);
+
+    disp->fillScreen(Color::BLACK);
+    disp->drawString(50, 100, "Appuyez sur la touche", Color::WHITE);
+    disp->drawString(50, 120, "du haut pour demarrer", Color::WHITE);
+
+    // Boucle d'attente
+    while (!shouldExit) {
+        // Mettre à jour l'état du keypad
+        keypad->update();
+
+        // Vérifier d'abord si une touche est pressée
+        if (keypad->isAnnyKeyPressed()) {
+            Direction direction = Direction(keypad->getDirection());
+
+            // Vérifie si la direction nord est pressée
+            if (direction == Direction::NORTH) {
+                // Ce microcontrôleur sera le maître
+                seed = HAL_GetTick();
+                setSeed(seed);
+
+                handShakeMessage message(seed);
+                comm->send(&message);
+
+                is_master = true;
+                setIsMaster(is_master);
+                shouldExit = true;
+            }
+        }
+
+        // Vérifier si on reçoit un message de l'autre microcontrôleur
+        if (!shouldExit) {
+            // NOTE: The HAL interrupt writes into the global Game::uartBuffer (via Game::handleUART).
+            // SnakeGame used its own member `uartBuffer` which was never filled; read from the global buffer instead.
+            if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+                frame.setMessage(buff, BUFFER_SIZE);
+
+                if (frame.getMessageType() == MessageType::Ack) {
+                    handleRemoteAck(frame.getHandShakeMessage());
+                    setIsMaster(false);
+                    shouldExit = true;
+
+                }
+            }
+        }
+
+        // Petit délai pour éviter la surcharge du CPU
+        HAL_Delay(50);
+    }
+
+    // Affiche un message de confirmation
+    disp->fillScreen(Color::BLACK);
+    disp->drawString(50, 120, is_master ? "Master - Starting game" :
+            "Slave - Starting game", Color::WHITE);
+    HAL_Delay(2000);
+
+    return;
+}
+
+void SnakeGame::handleRemoteAck(handShakeMessage msg) {
+    switch(msg.getType()) {
+        case MessageType::Ack:
+        	setSeed(msg.getSeed());
+        default:
+        	break;
+    }
+}
+
 bool SnakeGame::run() {
     switch(state) {
         case SnakeGameState::Initialization:
+            waitForSyncAndGetSeed();
             initialize();
             state = SnakeGameState::Run;
             break;
-            
+
         case SnakeGameState::Run:
             // Check UART and dispatch messages
+            // Read from the global Game::uartBuffer (filled by HAL callback)
             if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
 
                 switch (frame.getMessageType()) {
                     case MessageType::Position:
-                        handleRemote(frame.getSnakeGameMessage());
+                        handleRemoteSnakeGame(frame.getSnakeGameMessage());
                         break;
                     default:
                         break;

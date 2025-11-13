@@ -10,6 +10,7 @@
 
 #include "Interfaces/Display/Display.h"
 #include "Game/ComMessages/SnakeGameMessage.h"
+#include "Game/ComMessages/handShakeMessage.h"
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "Game/Graphics/GraphObjects/Fruit.h"
 #include "Interfaces/MotionInput/MotionInput.h"
@@ -18,6 +19,7 @@
 #include "Interfaces/Display/Point.h"
 #include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/SerialCom/Ringbuffer.h"
+#include "NucleoImp/SerialCom/UART.h"
 #include <vector>
 #include <memory>
 
@@ -44,13 +46,25 @@ public:
 	void setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
 	virtual ~SnakeGame();
 
+	void waitForSyncAndGetSeed();
+	void setSeed(uint32_t seed){
+		seed_ = seed;
+	}
+	void setIsMaster(bool is_master){
+		is_master_ = is_master;
+	}
+
 	// ===== Communication =====
-	void handleRemote(SnakeGameMessage msg);
+	void handleRemoteSnakeGame(SnakeGameMessage msg);
+	void handleRemoteAck(handShakeMessage msg);
 	void sendSnakePosition();
 	void processUARTMessage(uint8_t* data, size_t size);
     void updateOpponentSnake(uint8_t x, uint8_t y);
 
+
+
     // ===== Getters =====
+    bool getIsMaster() const { return is_master_; }
     MySnake* getMySnake() const { return mySnake.get(); }
     Keypad* getKeypad() const   { return keypad; }
     int getFruitCount() const 	{ return fruit_count; }
@@ -109,7 +123,10 @@ private:
 
     // Ajout du serpent adversaire
     std::unique_ptr<MySnake> snakeOpponent;
-    bool is_master;  // Indique si ce microcontrôleur est le maître
+    bool is_master_;  // Indique si ce microcontrôleur est le maître
+
+    uint32_t seed_;
+
 
     // Communication UART
     static constexpr size_t BUFFER_SIZE = 32;
