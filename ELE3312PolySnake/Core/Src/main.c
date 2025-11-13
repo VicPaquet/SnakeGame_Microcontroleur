@@ -784,11 +784,11 @@ static void MX_GPIO_Init(void)
   * @param [in] htim Pointer to timer periphery handle.
   */
 
-//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-//	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) 	{
-//	  captureCallback(htim);
-//	}
-//}
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) 	{
+	  captureCallback(htim);
+	}
+}
 
 /** @brief UART receive complete callback. Here we read the incoming message byte by byte.
   * @param [in] huart Pointer to the UART interface handle.

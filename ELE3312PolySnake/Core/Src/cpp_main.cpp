@@ -25,6 +25,7 @@
 // Définitions des variables globales
 Game *p_game = nullptr;
 Game game;
+TIM_HandleTypeDef *distance_timer_handle;
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +33,7 @@ extern "C" {
 
 
 void  handleUART(uint8_t data) {
+
 	if (p_game != nullptr){
 		p_game->handleUART(data);
 	}
@@ -50,6 +52,7 @@ void handleUARTData(uint8_t *data, uint16_t size){
 
 
 void cpp_main(peripheral_handles *handles) {
+	distance_timer_handle = handles->htim_distance;
     game.setup(handles);
     p_game = &game;
     game.run();

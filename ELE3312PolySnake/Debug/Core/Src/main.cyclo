@@ -12,6 +12,7 @@
 ../Core/Src/main.c:657:13:MX_USART2_UART_Init	2
 ../Core/Src/main.c:688:13:MX_DMA_Init	1
 ../Core/Src/main.c:719:13:MX_GPIO_Init	1
+../Core/Src/main.c:787:6:HAL_TIM_IC_CaptureCallback	2
 ../Core/Src/main.c:796:6:HAL_UART_RxCpltCallback	3
 ../Core/Src/main.c:810:6:HAL_SYSTICK_Callback	2
 ../Core/Src/main.c:830:6:Error_Handler	1

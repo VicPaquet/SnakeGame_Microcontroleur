@@ -17,7 +17,7 @@
 	  */
 	class Communication {
 		public:
-			virtual void send(Message *msg) = 0;
+			virtual bool send(Message *msg) = 0;
 	};
 
 /**

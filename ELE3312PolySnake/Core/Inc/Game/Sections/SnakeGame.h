@@ -131,9 +131,7 @@ private:
     // Communication UART
     static constexpr size_t BUFFER_SIZE = 32;
     uint8_t buff[BUFFER_SIZE];
-    Ringbuffer uartBuffer;  // Buffer circulaire pour UART
     SerialFrame frame;      // Pour gérer les messages
-    
 };
 
 #endif /* INC_GAME_SNAKEGAME_H_ */

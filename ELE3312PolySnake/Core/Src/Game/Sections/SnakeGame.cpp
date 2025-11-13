@@ -18,8 +18,8 @@ SnakeGame::SnakeGame() :
     fruitEncountered(false),
     fruit_count(0),
     score(0),
-    state(SnakeGameState::Initialization),
-    uartBuffer() {
+    state(SnakeGameState::Initialization)
+    {
 
     // Initialiser avec des unique_ptr
     checkboard = std::make_unique<Checkboard>();
@@ -136,26 +136,31 @@ void SnakeGame::waitForSyncAndGetSeed() {
                 setSeed(seed);
 
                 handShakeMessage message(seed);
-                comm->send(&message);
+                message.setType(MessageType::Ack);
+                bool send_ok = comm->send(&message);
+                if (!send_ok) {
+                    disp->fillScreen(Color::RED);
+                    disp->drawString(20, 120, "Erreur: envoi UART!", Color::WHITE);
+                    HAL_Delay(2000);
+                }
 
                 is_master = true;
                 setIsMaster(is_master);
-                shouldExit = true;
+                shouldExit = send_ok; // Ne sortir que si l'envoi a réussi
             }
         }
 
         // Vérifier si on reçoit un message de l'autre microcontrôleur
         if (!shouldExit) {
             // NOTE: The HAL interrupt writes into the global Game::uartBuffer (via Game::handleUART).
-            // SnakeGame used its own member `uartBuffer` which was never filled; read from the global buffer instead.
-            if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+            // Il faut lire dans Game::uartBuffer (buffer global), pas dans le membre local uartBuffer !
+            if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
 
                 if (frame.getMessageType() == MessageType::Ack) {
                     handleRemoteAck(frame.getHandShakeMessage());
                     setIsMaster(false);
                     shouldExit = true;
-
                 }
             }
         }
@@ -193,7 +198,7 @@ bool SnakeGame::run() {
         case SnakeGameState::Run:
             // Check UART and dispatch messages
             // Read from the global Game::uartBuffer (filled by HAL callback)
-            if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+            if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
 
                 switch (frame.getMessageType()) {

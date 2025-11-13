@@ -61,6 +61,9 @@ void main_run(peripheral_handles *handlers) ;
 		void run();
 		void handleUART(uint8_t data);
 		void handleUART(uint8_t *data, uint16_t size);
+		// --- UART global buffer accessible partout ---
+		static Ringbuffer uartBuffer;
+		static uint8_t buff[];
 	private:
 		peripheral_handles *handles = nullptr;
 
@@ -74,11 +77,6 @@ void main_run(peripheral_handles *handlers) ;
 		static UART uart;
 
 		static SnakeGame snakeGame;
-
-
-		// Uart
-		static Ringbuffer uartBuffer;
-		static uint8_t buff[];
 
 
 		//static DACSound sound;
