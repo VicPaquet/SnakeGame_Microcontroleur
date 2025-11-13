@@ -4,6 +4,7 @@
 #include "Game/Graphics/GraphObjects.h"
 #include "Game/Graphics/GraphObjects/Head.h"
 #include "Game/Graphics/GraphObjects/BodyPart.h"
+#include "Resources/spriteData.h" // Pour les constantes COLOR_*
 #include "Interfaces/Display/Sprite.h"
 #include "Interfaces/Display/Point.h"
 #include <cstdint>
@@ -57,6 +58,11 @@ public:
     
     Rect getOldTail() const { return oldTailPosition; }
     void setOldTail(Rect rectangle) {oldTailPosition = rectangle; }
+    
+    // Gestion des couleurs
+    void setColor(uint16_t primaryColor, uint16_t secondaryColor);
+    uint16_t getPrimaryColor() const { return primaryColor_; }
+    uint16_t getSecondaryColor() const { return secondaryColor_; }
 
     // Méthodes utilitaires
     bool isPositionOccupied(uint16_t x, uint16_t y) const;
@@ -65,6 +71,8 @@ public:
 
 private:
     Direction currentDirection; // Direction courante
+    uint16_t primaryColor_ = COLOR_GREEN;   // Couleur principale (remplace COLOR_GREEN)
+    uint16_t secondaryColor_ = COLOR_DARKGREEN; // Couleur secondaire (remplace COLOR_DARKGREEN)
     
     // GraphObjects uniformes
     std::unique_ptr<Head> head;        // Objet tête

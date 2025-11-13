@@ -207,10 +207,21 @@ void MySnake::drawSprite(uint16_t x, uint16_t y, Sprite *sprite) const {
         for (uint16_t px = 0; px < width; ++px) {
             uint16_t pixelColor = data[py * width + px];
             if (pixelColor != 20) { // Ne pas dessiner les pixels transparents
+                // Remplacer les couleurs vertes par les couleurs personnalisées
+                if (pixelColor == COLOR_GREEN) {
+                    pixelColor = primaryColor_;
+                } else if (pixelColor == COLOR_DARKGREEN) {
+                    pixelColor = secondaryColor_;
+                }
                 disp->drawPixel(static_cast<Color>(pixelColor), x + px, y + py);
             }
         }
     }
+}
+
+void MySnake::setColor(uint16_t primaryColor, uint16_t secondaryColor) {
+    primaryColor_ = primaryColor;
+    secondaryColor_ = secondaryColor;
 }
 
 void MySnake::moveHead(Direction direction) {

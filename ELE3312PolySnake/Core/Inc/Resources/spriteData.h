@@ -3,6 +3,7 @@
 
 #include "Interfaces/Display/Sprite.h"
 #include "Interfaces/Display/Display.h"
+
 #include <memory>
 #include <vector>
 

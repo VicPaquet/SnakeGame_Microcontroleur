@@ -59,7 +59,7 @@ public:
 	void handleRemoteAck(handShakeMessage msg);
 	void sendSnakePosition();
 	void processUARTMessage(uint8_t* data, size_t size);
-    void updateOpponentSnake(uint8_t x, uint8_t y);
+    void updateOpponentSnake(uint8_t x, uint8_t y, Direction direction);
 
 
 
@@ -90,6 +90,7 @@ public:
 	
 	// Méthodes de jeu
 	bool checkFruitCollision();   // Vérifier collision avec fruits
+	bool checkFruitCollisionForSnake(MySnake* snake); // Vérifier collision avec fruits pour un serpent spécifique
 	bool checkWallCollision();    // Vérifier collision avec murs
 	bool checkSelfCollision();    // Vérifier collision avec le corps
 

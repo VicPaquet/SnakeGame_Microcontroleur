@@ -54,6 +54,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/Game/Graphics/GraphObjects.h \
  ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
  ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h \
+ ../Core/Inc/Resources/spriteData.h \
  ../Core/Inc/Interfaces/Display/Sprite.h \
  ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h \
  ../Core/Inc/NucleoImp/MotionInput/mpu6050.h \
@@ -129,6 +130,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Game/Graphics/GraphObjects.h:
 ../Core/Inc/Game/Graphics/GraphObjects/Head.h:
 ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h:
+../Core/Inc/Resources/spriteData.h:
 ../Core/Inc/Interfaces/Display/Sprite.h:
 ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h:
 ../Core/Inc/NucleoImp/MotionInput/mpu6050.h:
