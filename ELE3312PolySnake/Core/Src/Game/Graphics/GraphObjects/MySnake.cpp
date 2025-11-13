@@ -17,7 +17,6 @@
 #include "Interfaces/Keypad/Keypad.h"
 #include "NucleoImp/Keypad/GPIOKeypad.h"
 
-
 MySnake::MySnake() : 
     currentDirection(Direction::EAST) {
     // Initialiser l'objet tête
@@ -63,6 +62,8 @@ void MySnake::initializeSnake(uint16_t startX, uint16_t startY, Direction startD
             case Direction::WEST:
                 currentX--;
                 break;
+             default:
+				break;
         }
         
         // Créer une nouvelle partie du corps
@@ -118,6 +119,25 @@ void MySnake::draw() {
         drawSprite(pixelX, pixelY, &snake_body);
     }
 }
+
+void MySnake::drawOpponent() {
+    if (!disp) return;
+
+    // Dessiner la tête avec le sprite snake_head
+    if (head) {
+        uint16_t pixelX = getHeadX() * 10 + rect.getX1();
+        uint16_t pixelY = getHeadY() * 10 + rect.getY1();
+        drawSprite(pixelX, pixelY, &snake_head_opponent);
+    }
+
+    // Dessiner le corps avec le sprite snake_body
+    for (const auto& bodyPart : body) {
+        uint16_t pixelX = (bodyPart.getRect().getX1() - rect.getX1()) / 10 * 10 + rect.getX1();
+        uint16_t pixelY = (bodyPart.getRect().getY1() - rect.getY1()) / 10 * 10 + rect.getY1();
+        drawSprite(pixelX, pixelY, &snake_body_opponent);
+    }
+}
+
 
 void MySnake::clear() {
     if (!disp) return;
@@ -234,6 +254,8 @@ void MySnake::moveHead(Direction direction) {
         case Direction::WEST:
             newX--;
             break;
+         default:
+        	 break;
     }
     
     // Vérifier si la nouvelle position est valide

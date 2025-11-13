@@ -10,6 +10,7 @@
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "NucleoImp/SerialCom/SerialFrame.h"
 #include "Game/ComMessages/SnakeGameMessage.h"
+#include "Game/ComMessages/handshakeMessage.h"
 
 
 SnakeGame::SnakeGame() :
@@ -30,7 +31,7 @@ SnakeGame::SnakeGame() :
 
 SnakeGame::~SnakeGame() {}
 
-void SnakeGame::setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput *motionInput) {
+void SnakeGame::setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput *motionInput, bool is_master) {
     this->comm = comm;
     this->motionInput = motionInput;
     this->disp = disp;
@@ -45,14 +46,13 @@ void SnakeGame::setup(Display *disp, Keypad *keypad, Communication *comm, Motion
         checkboard->setup(gameArea, disp, this);
     }
 
-    // Setup le serpent local
+    // Setup le serpent local avec une position différente selon maître/esclave
     if (mySnake && disp) {
         Rect gameArea{0, 0, disp->getScreenWidth(), disp->getScreenHeight()};
         mySnake->setup(gameArea, disp);
     }
 
     // Setup le serpent adverse
-    snakeOpponent = std::make_unique<MySnake>();
     if (snakeOpponent && disp) {
         Rect gameArea{0, 0, disp->getScreenWidth(), disp->getScreenHeight()};
         snakeOpponent->setup(gameArea, disp);
@@ -67,20 +67,78 @@ void SnakeGame::sendSnakePosition() {
     comm->send(&msg);
 }
 
-void SnakeGame::handleRemote(SnakeGameMessage msg) {
+void SnakeGame::handleRemoteSnakeGameMessage(SnakeGameMessage msg) {
     switch(msg.getType()) {
         case MessageType::Position:
             updateOpponentSnake(msg.getX(), msg.getY());
-            // msg.getCollisionType()
             break;
         default:
         	break;
     }
 }
 
+void SnakeGame::handleRemoteAck(handShakeMessage msg) {
+    switch(msg.getType()) {
+        case MessageType::Ack:
+        	setSeed(msg.getSeed());
+        default:
+        	break;
+    }
+}
+
+void SnakeGame::setSeed(uint32_t seed){
+	seed_ = seed;
+}
+
+void SnakeGame::moveSnakeOpponent(int eat) {
+    if (!snakeOpponent) return;
+
+    // Vérifier la collision avec les fruits avant de bouger
+    uint16_t headX = snakeOpponent->getHeadX();
+    uint16_t headY = snakeOpponent->getHeadY();
+
+    // Parcourir les fruits pour vérifier les collisions
+    for (auto it = fruits.begin(); it != fruits.end(); ++it) {
+        auto& fruit = *it;
+        if (fruit->isActive() && fruit->isAtPosition(headX, headY)) {
+            // Le serpent adverse mange un fruit
+            snakeOpponent->move(1); // Fait grandir le serpent adverse
+            fruit->consume(); // Consomme le fruit localement
+            fruits.erase(it); // Retire le fruit du jeu
+            generateNewFruit(); // Génère un nouveau fruit (même seed = même position sur les deux micros)
+            return;
+        }
+    }
+
+    // Si pas de collision avec un fruit, mouvement normal
+    snakeOpponent->move(eat);
+
+    // Vérifier les collisions avec les murs
+    if (checkOpponentWallCollision()) {
+        // Le serpent adverse a perdu
+        // Tu peux ajouter ici une logique de fin de partie
+        snakeOpponent->reset();
+    }
+}
+
+bool SnakeGame::checkOpponentWallCollision() {
+    if (!snakeOpponent) return false;
+
+    uint16_t headX = snakeOpponent->getHeadX();
+    uint16_t headY = snakeOpponent->getHeadY();
+
+    // Vérifier les limites de l'écran
+    return (headX >= BOARD_WIDTH || headY >= BOARD_HEIGHT);
+}
+
 void SnakeGame::updateOpponentSnake(uint8_t x, uint8_t y) {
     if (snakeOpponent) {
-        snakeOpponent->setHeadPosition(x, y);
+        // Met à jour la position seulement si elle est valide
+        if (x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT) {
+            snakeOpponent->setHeadPosition(x, y);
+            // Après avoir mis à jour la position, vérifie les collisions et bouge le serpent
+            moveSnakeOpponent(0);
+        }
     }
 }
 
@@ -93,8 +151,11 @@ void SnakeGame::initialize() {
     }
     fruitEncountered = false;
 
-    // Initialise le
+    // Initialise le serpent local
     initializeSnake();
+
+    // Initialise le serpent adverse
+    initializeOpponentSnake();
 
     // Initialize fruits
     initializeFruits();
@@ -105,9 +166,82 @@ void SnakeGame::initialize() {
     }
 }
 
+void SnakeGame::waitForSyncAndGetSeed() {
+    uint32_t seed = 0;
+    bool is_master = false;
+    bool shouldExit = false;
+
+
+    // Réinitialisation explicite du keypad et délai pour stabilisation
+    keypad->update();
+    HAL_Delay(100);
+
+    disp->fillScreen(Color::BLACK);
+    disp->drawString(50, 100, "Appuyez sur la touche", Color::WHITE);
+    disp->drawString(50, 120, "du haut pour demarrer", Color::WHITE);
+
+    // Boucle d'attente
+    while (!shouldExit) {
+        // Mettre à jour l'état du keypad
+        keypad->update();
+
+        // Vérifier d'abord si une touche est pressée
+        if (keypad->isAnnyKeyPressed()) {
+            Direction direction = Direction(keypad->getDirection());
+
+            // Vérifie si la direction nord est pressée
+            if (direction == Direction::NORTH) {
+                // Ce microcontrôleur sera le maître
+                seed = HAL_GetTick();
+                setSeed(seed);
+
+                handShakeMessage message(seed);
+                message.setType(MessageType::Ack);
+                comm->send(&message);
+
+                is_master = true;
+                setIsMaster(is_master);
+                shouldExit = true;
+            }
+        }
+
+        // Vérifier si on reçoit un message de l'autre microcontrôleur
+        if (!shouldExit) {
+            if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+                frame.setMessage(buff, BUFFER_SIZE);
+
+                if (frame.getMessageType() == MessageType::Ack) {
+                	handleRemoteAck(frame.getHandShakeMessage());
+                	setIsMaster(false);
+                	shouldExit = true;
+
+                }
+            }
+        }
+
+        // Petit délai pour éviter la surcharge du CPU
+        HAL_Delay(50);
+    }
+
+    // Affiche un message de confirmation
+    disp->fillScreen(Color::BLACK);
+    disp->drawString(50, 120, is_master ? "Master - Starting game" :
+            "Slave - Starting game", Color::WHITE);
+    HAL_Delay(2000);
+
+    return;
+}
+void SnakeGame::setIsMaster(bool is_master){
+	is_master_ = is_master;
+}
+
+
 bool SnakeGame::run() {
     switch(state) {
         case SnakeGameState::Initialization:
+        	waitForSyncAndGetSeed();
+        	srand(getSeed());
+
             initialize();
             state = SnakeGameState::Run;
             break;
@@ -119,7 +253,7 @@ bool SnakeGame::run() {
 
                 switch (frame.getMessageType()) {
                     case MessageType::Position:
-                        handleRemote(frame.getSnakeGameMessage());
+                        handleRemoteSnakeGameMessage(frame.getSnakeGameMessage());
                         break;
                     default:
                         break;
@@ -143,10 +277,6 @@ bool SnakeGame::run() {
                 checkboard->update();
             }
 
-            // Dessiner le serpent adverse
-            if (snakeOpponent) {
-                snakeOpponent->draw();
-            }
 
             // Délai basé sur l'accéléromètre
             uint32_t delay_ms = computeDelayFromAccel(motionInput);
@@ -195,20 +325,35 @@ bool SnakeGame::isPositionFree(int x, int y) {
 
 
 void SnakeGame::initializeSnake() {
-    // Initialiser MySnake avec un tampon circulaire
     if (mySnake && disp) {
-        // Position de départ aléatoire mais valide (au moins 5 cases des bordures)
-        int start_x = randomRange(5, BOARD_WIDTH - 5);
-        int start_y = randomRange(5, BOARD_HEIGHT - 5);
+        // Position de départ différente selon maître/esclave
+        int start_x, start_y;
+        Direction start_direction;
+        
+        if (is_master_) {
+            // Le maître commence à gauche
+            start_x = 5;  // Près du bord gauche
+            start_y = BOARD_HEIGHT / 2;
+            start_direction = Direction::EAST;  // Face à droite
+        } else {
+            // L'esclave commence à droite
+            start_x = BOARD_WIDTH - 5;  // Près du bord droit
+            start_y = BOARD_HEIGHT / 2;
+            start_direction = Direction::WEST;  // Face à gauche
+        }
 
-        // Longueur initiale du serpent (entre 3 et 10 tuiles)
-        int initial_length = randomRange(3, MAX_SNAKE_LENGTH);
-
-        // Direction initiale aléatoire
-        Direction start_direction = static_cast<Direction>(randomRange(0, 3));
+        // Longueur initiale du serpent
+        int initial_length = 5;  // Longueur fixe pour équité
 
         // Initialiser le serpent
         mySnake->initializeSnake(start_x, start_y, start_direction, initial_length);
+    }
+}
+
+void SnakeGame::initializeOpponentSnake() {
+    if (snakeOpponent && disp) {
+        // Position initiale hors écran en attendant les données UART
+        snakeOpponent->initializeSnake(-1, -1, Direction::EAST, 0);
     }
 }
 
@@ -227,6 +372,8 @@ void SnakeGame::moveSnake(int eat) {
 
     // Faire avancer le serpent: cela bouge le mySnake dans le vecteurs (update le vecteur)
     mySnake->move(eat);
+    
+    
 
     if (checkFruitCollision()) {
         mySnake->move(1); // eat = 1 pour faire grandir le serpent si on a collision avec un fruit

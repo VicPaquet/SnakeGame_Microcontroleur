@@ -10,6 +10,7 @@
 
 #include "Interfaces/Display/Display.h"
 #include "Game/ComMessages/SnakeGameMessage.h"
+//#include "Game/ComMessages/handShakeMessage.h"
 #include "Game/Graphics/GraphObjects/MySnake.h"
 #include "Game/Graphics/GraphObjects/Fruit.h"
 #include "Interfaces/MotionInput/MotionInput.h"
@@ -18,6 +19,7 @@
 #include "Interfaces/Display/Point.h"
 #include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/SerialCom/Ringbuffer.h"
+#include "cpp_main.h"
 #include <vector>
 #include <memory>
 
@@ -41,17 +43,27 @@ enum class SnakeGameState {
 class SnakeGame{
 public:
 	SnakeGame();
-	void setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput  *motionInput); // Add MotionInput, Communication et Player Manager Class
+	void setup(Display *disp, Keypad *keypad, Communication *comm, MotionInput  *motionInput, bool is_master); // Add MotionInput, Communication et Player Manager Class
 	virtual ~SnakeGame();
 
 	// ===== Communication =====
-	void handleRemote(SnakeGameMessage msg);
+	void handleRemoteSnakeGameMessage(SnakeGameMessage msg);
+	void handleRemoteAck(handShakeMessage msg);
+
 	void sendSnakePosition();
+	void initializeOpponentSnake();
 	void processUARTMessage(uint8_t* data, size_t size);
     void updateOpponentSnake(uint8_t x, uint8_t y);
 
+    // ===== Setters ====
+    void setIsMaster(bool is_master);
+    void setSeed(uint32_t seed);
+
     // ===== Getters =====
     MySnake* getMySnake() const { return mySnake.get(); }
+    MySnake* getSnakeOpponent() const { return snakeOpponent.get(); }
+    uint32_t getSeed() const    { return seed_; };
+
     Keypad* getKeypad() const   { return keypad; }
     int getFruitCount() const 	{ return fruit_count; }
     Head* getHead() const	    { return mySnake ? mySnake->getHead() : nullptr; }
@@ -79,11 +91,16 @@ public:
 	bool checkWallCollision();    // Vérifier collision avec murs
 	bool checkSelfCollision();    // Vérifier collision avec le corps
 
+	// Méthodes de contrôle du serpent adverse
+    void moveSnakeOpponent(int eat = 0);  // Faire avancer le serpent adverse
+    bool checkOpponentWallCollision();    // Vérifier collision avec murs pour l'adversaire
+
 	// Méthodes d'aide
 	int randomRange(int min, int max);
 	bool isPositionFree(int x, int y);
 	void generateNewFruit();
 	uint32_t computeDelayFromAccel(MotionInput* motionInput);
+	void waitForSyncAndGetSeed();
 
 private:
 	// Périphériques
@@ -109,7 +126,8 @@ private:
 
     // Ajout du serpent adversaire
     std::unique_ptr<MySnake> snakeOpponent;
-    bool is_master;  // Indique si ce microcontrôleur est le maître
+    bool is_master_;  // Indique si ce microcontrôleur est le maître
+    uint32_t seed_;
 
     // Communication UART
     static constexpr size_t BUFFER_SIZE = 32;

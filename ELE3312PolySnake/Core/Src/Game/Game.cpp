@@ -51,7 +51,7 @@ void Game::setup(peripheral_handles *handles) {
 	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
 
 	 motionInput.setup(handles->hi2c);
-	 snakeGame.setup(&display,&keypad, &uart, &motionInput);
+	 snakeGame.setup(&display,&keypad, &uart, &motionInput, is_master /* is_master */);
 	 keypad.setup(handles->gpio_keypad);
 	 display.setup(handles->hspi_tft);
 	 display.clearScreen();
@@ -72,86 +72,11 @@ void Game::setup(peripheral_handles *handles) {
 	 */
 }
 
-//extern volatile uint16_t game_delay;
-
 void Game::run(){
-	//uint8_t buff[BUFFER_SIZE]= {0};
-	//SerialFrame frame; // à implementer
 	while(1){
 		snakeGame.run();
 		HAL_Delay(10);
 	}
-		/*
-		// Check UART and dispatch messages
-		if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
-			frame.setMessage(buff, BUFFER_SIZE);
-
-			switch (frame.getMessageType()){
-				case MessageType::PlayerChoice:
-					if (state == GameState::Menu) { // Only dispatch messages for the current state
-						menu.handleRemote(frame.getPlayerChoiceMessage());
-					}
-					break;
-				case MessageType::Position :
-					if (state == GameState::Labyrinth) { // Only dispatch messages for the current state
-						labyrinth.handleRemote(frame.getLabyrinthMessage());
-					}
-					break;
-
-				case MessageType::PowerValue :
-					if (state == GameState::Combat) { // Only dispatch messages for the current state
-						combat.handleRemote(frame.getCombatMessage());
-					}
-					break;
-
-				default:
-					break;
-			}
-
-		}
-		*/
-/*
-		// Handle user input
-		switch(state){
-			case GameState::Menu:
-				keypad.update();
-				break;
-			case GameState::Play:
-				//play.handleUserInput();
-				break;
-
-			case GameState::VictoryScreen:
-				break;
-				*/
-		/*
-		// Update game
-		if (game_delay == 1) {
-			game_delay = 0;
-
-			switch(state){
-				case GameState::Menu:
-					if(menu.run()){
-						state = GameState::Labyrinth;
-					}
-					break;
-
-				case GameState::Combat:
-					if (play.run()) {
-						state = GameState::PlayScreen;
-					}
-					break;
-
-				case GameState::ResultScreen:
-					if (resultScreen.run()){
-						if (resultScreen.run()) {
-							state = GameState::ResultScreen;
-							}
-							break;
-					}
-					break;
-
-			}
-		}*/
 }
 
 

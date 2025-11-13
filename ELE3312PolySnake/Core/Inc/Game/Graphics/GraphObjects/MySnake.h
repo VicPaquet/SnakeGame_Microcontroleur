@@ -37,6 +37,8 @@ public:
     
     // Méthodes de dessin
     void draw() override;
+    void drawOpponent();
+
     void clear() override;
     
     // Getters pour les GraphObjects (système uniforme)

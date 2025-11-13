@@ -15,6 +15,7 @@
 /** @brief Structure that encapsulates the handles to the micro controllers 
   * peripherals.
   */
+
 typedef struct {
 	DAC_HandleTypeDef *hdac;
 	TIM_HandleTypeDef *htim_dac;
@@ -39,6 +40,7 @@ extern "C" {
   */
 void cpp_main(peripheral_handles *handles) ;
 void  handleUART(uint8_t data) ;
+void handleUARTData(uint8_t *data, uint16_t size);
 
 //void captureCallback(TIM_HandleTypeDef *htim);
 

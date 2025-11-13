@@ -23,7 +23,9 @@
 
 // Données des sprites
 extern uint16_t sprite_snake_head[];
+extern uint16_t sprite_snake_head_opponent[];
 extern uint16_t sprite_snake_body[];
+extern uint16_t sprite_snake_body_opponent[];
 extern uint16_t sprite_snake_tail[];
 extern uint16_t sprite_bg_white[];
 extern uint16_t sprite_bg_gray[];
@@ -32,7 +34,9 @@ extern uint16_t sprite_banana[];
 
 // Sprites
 extern Sprite snake_head;
+extern Sprite snake_head_opponent;
 extern Sprite snake_body;
+extern Sprite snake_body_opponent;
 extern Sprite snake_tail;
 extern Sprite bg_white;
 extern Sprite bg_gray;

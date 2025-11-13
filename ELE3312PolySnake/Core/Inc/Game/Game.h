@@ -20,6 +20,7 @@
 #include "NucleoImp/RGBLight/RGBLED.h"
 #include "Game/Sections/SnakeGame.h"
 #include "NucleoImp/SerialCom/UART.h"
+#include "Game/ComMessages/handShakeMessage.h"
 //#include "NucleoImp/Sound/DACSound.h"
 #include "NucleoImp/SerialCom/Ringbuffer.h"
 //#include "Game/Sections/Menu.h"
@@ -60,6 +61,8 @@ void main_run(peripheral_handles *handlers) ;
 		void run();
 		void handleUART(uint8_t data);
 		void handleUART(uint8_t *data, uint16_t size);
+		void setIsMaster(bool master){is_master = master;};
+		bool getIsMaster(){return is_master;};
 	private:
 		peripheral_handles *handles = nullptr;
 
@@ -78,6 +81,8 @@ void main_run(peripheral_handles *handlers) ;
 		// Uart
 		static Ringbuffer uartBuffer;
 		static uint8_t buff[];
+
+		bool is_master;
 
 
 		//static DACSound sound;

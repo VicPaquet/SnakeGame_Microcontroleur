@@ -1,6 +1,3 @@
-
-
-
 #include <Resources/checkboardData.h>
 #include <Resources/spriteData.h>
 #include "Game/Sections/SnakeGame.h"
@@ -8,6 +5,7 @@
 #include "Game/Graphics/GraphObjects/Head.h"
 #include "Game/Graphics/GraphObjects/BodyPart.h"
 #include "Interfaces/Display/Point.h"
+
 
 void Checkboard::setup(const Rect &rect, Display *disp, SnakeGame* game) { //Add playerManager as a parameter
 	this->rect = rect;
@@ -109,6 +107,11 @@ void Checkboard::update(){
     if (snake) {
         snake->draw(); // Dessine automatiquement la tête et le corps avec les sprites
     }
+    MySnake* snakeOpponent = snakeGame->getSnakeOpponent();
+    if (snakeOpponent) {
+    	snakeOpponent->drawOpponent(); // Dessine automatiquement la tête et le corps avec les sprites
+    }
+
     
     // Dessiner les fruits avec leur méthode draw()
     const auto& fruits = snakeGame->getFruits();
@@ -182,7 +185,3 @@ void Checkboard::clear(){
 	if (!disp) return;
 	disp->fillScreen(Color::BLACK);
 }
-
-
-
-

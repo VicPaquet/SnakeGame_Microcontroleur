@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include "NucleoImp/SerialCom/UARTInstance.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -296,12 +298,8 @@ void DMA1_Stream7_IRQHandler(void)
   */
 void UART5_IRQHandler(void)
 {
-  /* USER CODE BEGIN UART5_IRQn 0 */
 
-  /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
-  /* USER CODE BEGIN UART5_IRQn 1 */
-
+	HAL_UART_IRQHandler(&huart5);
   /* USER CODE END UART5_IRQn 1 */
 }
 

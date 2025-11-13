@@ -13,14 +13,11 @@
 #include "Interfaces/Communication/Message.h"
 #include <memory>
 
-	/** @brief Interface for the communication with another player.
-	  */
-	class Communication {
-		public:
-			virtual void send(Message *msg) = 0;
-	};
 
-/**
-  * @}
-  */ // End of documentation group ELE3312
+class Communication {
+	public:
+		virtual void send(Message *msg) = 0;
+		virtual Message* receive() = 0;
+};
 #endif
+
