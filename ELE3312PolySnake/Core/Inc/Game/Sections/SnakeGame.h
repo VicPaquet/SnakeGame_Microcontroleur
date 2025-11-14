@@ -58,6 +58,7 @@ public:
 	void handleRemoteSnakeGame(SnakeGameMessage msg);
 	void handleRemoteAck(handShakeMessage msg);
 	void sendSnakeDirection();
+	bool checkOpponentCollision();
 	void processUARTMessage(uint8_t* data, size_t size);
     void updateOpponentSnake(uint8_t x, uint8_t y, Direction direction);
 

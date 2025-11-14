@@ -16,7 +16,7 @@
 
 
 	enum class MessageType{
-		Ack,NAck, PlayerChoice, Position, Ready, Data, Text, Unknown
+		Ack,NAck, PlayerChoice, GameOver, Position, Ready, Data, Text, Unknown
 	};
 	/** @brief Abstract class that defines the interface of a message.
 	  */

@@ -77,14 +77,19 @@ void SnakeGame::sendSnakeDirection() {
 
 void SnakeGame::handleRemoteSnakeGame(SnakeGameMessage msg) {
     switch(msg.getType()) {
-        case MessageType::Position:{ // Garder le même type de message
-            // Mettre à jour seulement la direction du serpent adverse
+        case MessageType::Position: {
             Direction newDirection = static_cast<Direction>(msg.getDirection());
             if (snakeOpponent) {
                 snakeOpponent->setDirection(newDirection);
             }
-            break;}
-    default:
+            break;
+        }
+        case MessageType::GameOver: {
+            // L'autre joueur a perdu, on redémarre aussi
+            restart();
+            break;
+        }
+        default:
             break;
     }
 }
@@ -147,7 +152,7 @@ void SnakeGame::updateOpponentSnake(uint8_t x, uint8_t y, Direction direction) {
 }
 
 void SnakeGame::initialize() {
-    // Utiliser le seed synchronisé pour le générateur aléatoire
+    // Utiliser le seed synchronisé
     srand(seed_);
     
     // Dessiner le checkboard
@@ -157,30 +162,27 @@ void SnakeGame::initialize() {
     }
     fruitEncountered = false;
 
-    // ====== INITIALISER LE SERPENT LOCAL ======
-    if (mySnake) {
-        if (is_master_) {
-            mySnake->setColor(COLOR_GREEN, COLOR_DARKGREEN);
-            // Master: spawn en haut à gauche, direction EST
-            mySnake->initializeSnake(5, 5, Direction::EAST, 3);
-        } else {
-            mySnake->setColor(COLOR_BLUE, COLOR_BLUE);
-            // Slave: spawn en bas à droite, direction OUEST
-            mySnake->initializeSnake(26, 18, Direction::WEST, 3);
-        }
-    }
+    // ====== INITIALISER LES DEUX SERPENTS DANS LE MÊME ORDRE ======
 
-    // ====== INITIALISER LE SERPENT ADVERSE ======
-    // Le serpent adverse spawn à la position OPPOSÉE avec la même config
-    if (snakeOpponent) {
-        if (is_master_) {
+    if (is_master_) {
+        // Master : mon serpent = vert, adverse = bleu
+        if (mySnake) {
+            mySnake->setColor(COLOR_GREEN, COLOR_DARKGREEN);
+            mySnake->initializeSnake(5, 5, Direction::EAST, 3);
+        }
+        if (snakeOpponent) {
             snakeOpponent->setColor(COLOR_BLUE, COLOR_BLUE);
-            // L'adversaire du master = position du slave
             snakeOpponent->initializeSnake(26, 18, Direction::WEST, 3);
-        } else {
+        }
+    } else {
+        // Slave : mon serpent = bleu, adverse = vert
+        if (snakeOpponent) {
             snakeOpponent->setColor(COLOR_GREEN, COLOR_DARKGREEN);
-            // L'adversaire du slave = position du master
             snakeOpponent->initializeSnake(5, 5, Direction::EAST, 3);
+        }
+        if (mySnake) {
+            mySnake->setColor(COLOR_BLUE, COLOR_BLUE);
+            mySnake->initializeSnake(26, 18, Direction::WEST, 3);
         }
     }
 
@@ -192,12 +194,16 @@ void SnakeGame::initialize() {
         checkboard->update();
     }
 
-    // Dessiner les deux serpents initiaux
     if (mySnake) {
         mySnake->draw();
     }
     if (snakeOpponent) {
         snakeOpponent->draw();
+    }
+
+    // Envoyer la direction initiale
+    if (mySnake) {
+        sendSnakeDirection();
     }
 }
 
@@ -246,8 +252,6 @@ void SnakeGame::waitForSyncAndGetSeed() {
 
         // Vérifier si on reçoit un message de l'autre microcontrôleur
         if (!shouldExit) {
-            // NOTE: The HAL interrupt writes into the global Game::uartBuffer (via Game::handleUART).
-            // Il faut lire dans Game::uartBuffer (buffer global), pas dans le membre local uartBuffer !
             if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
 
@@ -260,14 +264,14 @@ void SnakeGame::waitForSyncAndGetSeed() {
         }
 
         // Petit délai pour éviter la surcharge du CPU
-        HAL_Delay(50);
+        HAL_Delay(30);
     }
 
     // Affiche un message de confirmation
     disp->fillScreen(Color::BLACK);
     disp->drawString(50, 120, is_master ? "Master - Starting game" :
             "Slave - Starting game", Color::WHITE);
-    HAL_Delay(2000);
+    HAL_Delay(3000);
 
     return;
 }
@@ -288,8 +292,8 @@ bool SnakeGame::run() {
             initialize();
             state = SnakeGameState::Run;
             break;
-
         case SnakeGameState::Run:
+
             // ====== RÉCEPTION DES MESSAGES UART ======
             if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
@@ -297,6 +301,10 @@ bool SnakeGame::run() {
                     case MessageType::Position:
                         handleRemoteSnakeGame(frame.getSnakeGameMessage());
                         break;
+                    case MessageType::GameOver:
+                        // L'autre joueur a perdu, on redémarre aussi
+                        restart();
+                        return false; // Sortir de run() pour éviter de continuer
                     default:
                         break;
                 }
@@ -304,72 +312,94 @@ bool SnakeGame::run() {
 
             // ====== GESTION DU SERPENT LOCAL ======
             if (mySnake && mySnake->getLength() > 0) {
-                // Mettre à jour le keypad
                 keypad->update();
                 
-                // Gestion des entrées utilisateur (changement de direction)
                 Direction inputDirection = Direction(keypad->getDirection());
                 if (inputDirection != Direction::UNKNOWN) {
+
                     Direction oldDirection = mySnake->getCurrentDirection();
+
+                    if (inputDirection == Direction::NORTH && oldDirection == Direction::SOUTH) {
+						inputDirection = oldDirection; // Pas de changement
+                    }
+                    if (inputDirection == Direction::SOUTH && oldDirection == Direction::NORTH) {
+                    	inputDirection = oldDirection; // Pas de changement
+                    }
+                    if (inputDirection == Direction::EAST && oldDirection == Direction::WEST) {
+						inputDirection = oldDirection; // Pas de changement
+					}
+                    if (inputDirection == Direction::WEST && oldDirection == Direction::EAST) {
+						inputDirection = oldDirection; // Pas de changement
+					}
                     mySnake->setDirection(inputDirection);
 
-                    // Envoyer SEULEMENT si la direction a changé
                     if (inputDirection != oldDirection) {
                         sendSnakeDirection();
                     }
                 }
                 
-                // Sauvegarder l'ancienne queue AVANT le mouvement
                 Rect oldTail = mySnake->getOldTail();
-
-                // Faire bouger le serpent local
-                moveSnake(0);
+                mySnake->move(0);
                 
-                // Effacer l'ancienne position de la queue
-                if (checkboard) {
-                    checkboard->erasePosition(oldTail.getX1(), oldTail.getY1());
+                // Vérifier collision avec fruit
+                bool ateFruit = checkFruitCollision();
+                if (ateFruit) {
+                    // Le fruit est déjà effacé par consume()
+                    mySnake->addBodyPart();
+                    generateNewFruit();
+                } else {
+                    // Effacer l'ancienne queue seulement si on n'a PAS mangé
+                    if (checkboard) {
+                        checkboard->erasePosition(oldTail.getX1(), oldTail.getY1());
+                    }
                 }
 
-                // Dessiner le serpent local
+                // Vérifier collisions mortelles
+                if (checkWallCollision() || checkSelfCollision() || checkOpponentCollision()) {
+                    // Envoyer Game Over à l'autre microcontrôleur
+                    SnakeGameMessage gameOverMsg(0, 0, 0, CollisionType::None);
+                    gameOverMsg.setType(MessageType::GameOver);
+                    comm->send(&gameOverMsg);
+
+                    // Redémarrer localement
+                    restart();
+                    return false; // Sortir pour éviter de continuer la frame
+                }
+
                 mySnake->draw();
             }
 
+
             // ====== GESTION DU SERPENT ADVERSE ======
             if (snakeOpponent && snakeOpponent->getLength() > 0) {
-                // Sauvegarder l'ancienne queue AVANT le mouvement
                 Rect oldTailOpponent = snakeOpponent->getOldTail();
+                snakeOpponent->move(0);
 
-                // Vérifier si le serpent adverse mange un fruit
-                bool ateFruit = checkFruitCollisionForSnake(snakeOpponent.get());
+                bool ateFruitOpponent = checkFruitCollisionForSnake(snakeOpponent.get());
+                if (ateFruitOpponent) {
+                    snakeOpponent->addBodyPart();
 
-                // Faire bouger le serpent adverse automatiquement
-                snakeOpponent->move(ateFruit ? 1 : 0);
-
-                // Effacer l'ancienne position de la queue (sauf si on a mangé)
-                if (checkboard && !ateFruit) {
-                    checkboard->erasePosition(oldTailOpponent.getX1(), oldTailOpponent.getY1());
-                }
-
-                // Si un fruit a été mangé, générer un nouveau fruit
-                if (ateFruit) {
-                    generateNewFruit();
+                } else {
+                    if (checkboard) {
+                        checkboard->erasePosition(oldTailOpponent.getX1(), oldTailOpponent.getY1());
+                    }
                 }
                 
-                // Dessiner le serpent adverse
                 snakeOpponent->draw();
             }
 
-            // ====== DESSINER LES FRUITS ======
+            // ====== DESSINER LES FRUITS EN DERNIER ======
             const auto& fruits = getFruits();
             for (const auto& fruit : fruits) {
                 if (fruit->isActive()) {
                     fruit->draw();
                 }
             }
-            
             // ====== DÉLAI ======
-            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
+            uint32_t delay_ms = 120; // Même vitesse pour master et slave pour tester
             HAL_Delay(delay_ms);
+//            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
+//            HAL_Delay(delay_ms);
             break;
     }
     return false;
@@ -457,7 +487,7 @@ void SnakeGame::moveSnake(int eat) {
         }
     }
 
-    if (checkWallCollision() || checkSelfCollision()) {
+    if (checkWallCollision() || checkSelfCollision() || checkOpponentCollision()) {
         // Game over
         restart();
     }
@@ -544,6 +574,12 @@ bool SnakeGame::checkSelfCollision() {
 
     // Vérifier collision avec le corps
     return mySnake->checkCollision(headX, headY);
+}
+
+bool SnakeGame::checkOpponentCollision() {
+    if (!mySnake) return false;
+
+    return snakeOpponent->isPositionOccupied(mySnake->getHeadX(), mySnake->getHeadY());
 }
 
 uint32_t SnakeGame::computeDelayFromAccel(MotionInput* motionInput)
