@@ -35,6 +35,7 @@ public:
     // Méthodes de mouvement selon les spécifications du labo
     void move(int eat);  // Faire avancer le serpent d'une position
     void turn(int direction);  // Changer la direction (0=gauche, 1=droite)
+    void moveBodyOnly();
     
     // Méthodes de dessin
     void draw() override;
@@ -68,6 +69,7 @@ public:
     bool isPositionOccupied(uint16_t x, uint16_t y) const;
     bool checkCollision(uint16_t x, uint16_t y) const; // Vérifier collision avec le corps
     void reset(); // Remettre à zéro le serpent
+    void addBodyPart();
 
 private:
     Direction currentDirection; // Direction courante
@@ -84,7 +86,7 @@ private:
     void drawSprite(uint16_t x, uint16_t y, Sprite *sprite) const; // Dessiner un sprite
     void moveHead(Direction direction); // Déplacer la tête dans une direction
     void moveBody(); // Déplacer le corps pour suivre la tête
-    void addBodyPart(); // Ajouter une nouvelle partie du corps
+     // Ajouter une nouvelle partie du corps
 };
 
 #endif /* INC_GAME_GRAPHICS_GRAPHOBJECTS_MYSNAKE_H_ */

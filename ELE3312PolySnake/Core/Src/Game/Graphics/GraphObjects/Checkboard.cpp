@@ -117,6 +117,8 @@ void Checkboard::update(){
             fruit->draw(); // Dessine automatiquement avec le bon sprite selon le type
         }
     }
+
+
     // Redessinner à l'ancienne position
     uint16_t X1 = snake->getOldTail().getX1();
     uint16_t Y1 = snake->getOldTail().getY1();
@@ -125,6 +127,14 @@ void Checkboard::update(){
     this->drawSprite(X1, Y1, sprite);
 }
 
+void Checkboard::erasePosition(uint16_t pixelX, uint16_t pixelY) {
+    if (!disp) return;
+
+    Sprite* sprite = getSpriteAt(Point(pixelX, pixelY));
+    if (sprite) {
+        drawSprite(pixelX, pixelY, sprite);
+    }
+}
 
 uint16_t Checkboard::toScreenX(uint16_t gridX) const{
 	return gridX * gridWidth + rect.getX1();

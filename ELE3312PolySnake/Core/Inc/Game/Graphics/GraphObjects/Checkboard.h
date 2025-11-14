@@ -27,6 +27,7 @@ public:
 	void draw() override;
 	void clear() override;
 	void update();
+	void erasePosition(uint16_t pixelX, uint16_t pixelY);
 
 	//Collision checkPosition(uint16_t x, uint16_t y, Player *player, Player *opponent);
 	bool isReady();
@@ -36,7 +37,6 @@ private:
 	uint16_t gridWidth;  // The width in pixels
 	std::vector<Sprite*> checkboard; //Contains all the Sprites of the maze
 	SnakeGame* snakeGame = nullptr;
-
 
 	uint16_t numHorizontalTiles() const;
 	uint16_t numVerticalTiles() const;

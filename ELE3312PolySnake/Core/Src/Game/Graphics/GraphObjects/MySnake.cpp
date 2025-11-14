@@ -103,6 +103,33 @@ void MySnake::turn(int direction) {
     }
 }
 
+void MySnake::moveBodyOnly() {
+    if (body.empty() || !head) return;
+
+    // Obtenir l'ANCIENNE position de la tête (avant qu'elle bouge)
+    uint16_t oldHeadX = head->getOldHead().getX1();
+    uint16_t oldHeadY = head->getOldHead().getY1();
+
+    // Sauvegarder l'ancienne queue avant de déplacer
+    Rect oldTail = body[body.size() - 1].getRect();
+    this->setOldTail(oldTail);
+
+    // Déplacer chaque partie du corps vers la position de la partie précédente
+    // EN PARTANT DE LA FIN (queue vers tête)
+    for (int i = body.size() - 1; i > 0; i--) {
+        // Copier la position de la partie précédente (plus proche de la tête)
+        Rect prevRect = body[i - 1].getRect();
+        body[i].setPosition(prevRect.getX1(), prevRect.getY1());
+    }
+
+    // Déplacer la première partie du corps vers l'ANCIENNE position de la tête
+    if (!body.empty()) {
+        uint16_t pixelX = oldHeadX * 10 + rect.getX1();
+        uint16_t pixelY = oldHeadY * 10 + rect.getY1();
+        body[0].setPosition(pixelX, pixelY);
+    }
+}
+
 void MySnake::draw() {
     if (!disp) return;
     
@@ -284,20 +311,20 @@ void MySnake::moveBody() {
         body[0].setPosition(pixelX, pixelY);
     }
 }
-
 void MySnake::addBodyPart() {
-    if (!disp) return;
+    if (!disp || !head) return;
     
-    // Ajouter une nouvelle partie du corps à la position de la queue
-    uint16_t tailX = getTailX();
-    uint16_t tailY = getTailY();
+    // Ajouter une nouvelle partie du corps à l'ANCIENNE position de la tête
+    uint16_t oldHeadX = head->getOldHead().getX1();
+    uint16_t oldHeadY = head->getOldHead().getY1();
     
-    uint16_t pixelX = tailX * 10 + rect.getX1();
-    uint16_t pixelY = tailY * 10 + rect.getY1();
+    uint16_t pixelX = oldHeadX * 10 + rect.getX1();
+    uint16_t pixelY = oldHeadY * 10 + rect.getY1();
     Rect bodyRect(pixelX, pixelY, pixelX + 10, pixelY + 10);
     BodyPart bodyPart(disp, bodyRect);
     body.push_back(bodyPart);
 }
+
 
 bool MySnake::isValidPosition(uint16_t x, uint16_t y) const {
     // Vérifier les limites de l'écran (32x24 tuiles)
@@ -314,21 +341,20 @@ void MySnake::setDirection(Direction direction) {
 	currentDirection = direction;
 
 }
-
 void MySnake::setHeadPosition(uint16_t x, uint16_t y) {
     if (!head || !disp) return;
     
+    // **IMPORTANT: Sauvegarder l'ANCIENNE position AVANT de la changer**
+    uint16_t oldX = getHeadX();
+    uint16_t oldY = getHeadY();
+    head->setOldHead(oldX, oldY);
+
     // Conversion des coordonnées de grille en pixels
     uint16_t pixelX = x * 10 + rect.getX1();
     uint16_t pixelY = y * 10 + rect.getY1();
     
     // Créer un nouveau rectangle pour la position de la tête
     Rect headRect(pixelX, pixelY, pixelX + 10, pixelY + 10);
-    
-    // Sauvegarder l'ancienne position pour la mise à jour du corps
-    if (head) {
-        head->setOldHead(getHeadX(), getHeadY());
-    }
     
     // Mettre à jour la position de la tête
     head->setPosition(pixelX, pixelY);
