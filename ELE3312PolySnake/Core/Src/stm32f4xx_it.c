@@ -61,11 +61,20 @@ extern DMA_HandleTypeDef hdma_spi1_rx;
 extern DMA_HandleTypeDef hdma_spi1_tx;
 extern SPI_HandleTypeDef hspi1;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim7;
 extern DMA_HandleTypeDef hdma_uart5_rx;
 extern DMA_HandleTypeDef hdma_uart5_tx;
 extern UART_HandleTypeDef huart5;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
+#ifdef __cplusplus
+extern "C" {
+#endif
+void MusicPlayer_TimerCallback(void); // Déclaration de la fonction C++
+#ifdef __cplusplus
+}
+#endif
+
 
 /* USER CODE END EV */
 
@@ -306,6 +315,20 @@ void UART5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM7 global interrupt.
+  */
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+
+  /* USER CODE END TIM7_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA2 stream0 global interrupt.
   */
 void DMA2_Stream0_IRQHandler(void)
@@ -363,4 +386,13 @@ void I2C3_ER_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+  if (htim->Instance == TIM7) {
+    MusicPlayer_TimerCallback();
+  }
+  /* USER CODE END Callback 0 */
+}
 /* USER CODE END 1 */

@@ -68,13 +68,18 @@ void Game::setup(peripheral_handles *handles) {
 }
 
 void Game::run(){
-	HAL_Delay(100);
-	musicPlayer.playMelody(FRERE_JACQUES, 32);
+    HAL_Delay(100);
 
-	while(1){
-		snakeGame.run();
-		musicPlayer.update();
-	}
+    // Démarrer le timer d'interruption pour l'audio (TIM7)
+    extern TIM_HandleTypeDef htim7;
+    HAL_TIM_Base_Start_IT(&htim7);
+
+    musicPlayer.playMelody(FRERE_JACQUES, 32);
+
+    while(1){
+        snakeGame.run();
+        musicPlayer.update(); // Garde ça pour gérer les changements de notes
+    }
 }
 
 

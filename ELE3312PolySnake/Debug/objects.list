@@ -33,6 +33,7 @@
 "./Core/Src/Resources/spriteData.o"
 "./Core/Src/cpp_main.o"
 "./Core/Src/main.o"
+"./Core/Src/music_timer_callback.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
 "./Core/Src/syscalls.o"
