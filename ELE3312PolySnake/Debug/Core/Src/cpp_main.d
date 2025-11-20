@@ -71,7 +71,11 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/NucleoImp/SerialCom/SerialFrame.h \
  ../Core/Inc/NucleoImp/SerialCom/COBS.h \
  ../Core/Inc/NucleoImp/SerialCom/Ringbuffer.h \
- ../Core/Inc/NucleoImp/SerialCom/UART.h
+ ../Core/Inc/NucleoImp/SerialCom/UART.h \
+ ../Core/Inc/Game/Sections/MusicPlayer.h \
+ ../Core/Inc/Interfaces/Sound/Note.h \
+ ../Core/Inc/NucleoImp/Sound/DACSound.h \
+ ../Core/Inc/Interfaces/Sound/Sound.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -148,3 +152,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/NucleoImp/SerialCom/COBS.h:
 ../Core/Inc/NucleoImp/SerialCom/Ringbuffer.h:
 ../Core/Inc/NucleoImp/SerialCom/UART.h:
+../Core/Inc/Game/Sections/MusicPlayer.h:
+../Core/Inc/Interfaces/Sound/Note.h:
+../Core/Inc/NucleoImp/Sound/DACSound.h:
+../Core/Inc/Interfaces/Sound/Sound.h:

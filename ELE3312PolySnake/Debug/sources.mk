@@ -45,6 +45,7 @@ Core/Src/Game/Graphics \
 Core/Src/Game/Sections \
 Core/Src/Interfaces/Communication \
 Core/Src/Interfaces/Display \
+Core/Src/Interfaces/Sound \
 Core/Src/NucleoImp/AnalogInput \
 Core/Src/NucleoImp/Display \
 Core/Src/NucleoImp/Distance \
@@ -52,6 +53,7 @@ Core/Src/NucleoImp/Keypad \
 Core/Src/NucleoImp/MotionInput \
 Core/Src/NucleoImp/RGBLight \
 Core/Src/NucleoImp/SerialCom \
+Core/Src/NucleoImp/Sound \
 Core/Src/Resources \
 Core/Src \
 Core/Startup \

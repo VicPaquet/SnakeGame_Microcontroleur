@@ -21,7 +21,8 @@
 #include "Game/Sections/SnakeGame.h"
 #include "NucleoImp/SerialCom/UART.h"
 
-//#include "NucleoImp/Sound/DACSound.h"
+#include "Game/Sections/MusicPlayer.h"
+#include "NucleoImp/Sound/DACSound.h"
 #include "NucleoImp/SerialCom/Ringbuffer.h"
 //#include "Game/Sections/Menu.h"
 //#include "Game/Sections/Combat.h"
@@ -63,6 +64,7 @@ void main_run(peripheral_handles *handlers) ;
 		void handleUART(uint8_t *data, uint16_t size);
 		// --- UART global buffer accessible partout ---
 		static Ringbuffer uartBuffer;
+		static MusicPlayer musicPlayer;
 		static uint8_t buff[];
 	private:
 		peripheral_handles *handles = nullptr;
@@ -76,20 +78,8 @@ void main_run(peripheral_handles *handlers) ;
 		static RGBLED rgbLed;
 		static UART uart;
 
+		static DACSound sound;
 		static SnakeGame snakeGame;
-
-
-		//static DACSound sound;
-		// Players
-		//static PlayerManager players; not used yet
-		// Game sections
-		/*
-		static Menu menu;
-		static PLay play;
-		static ResultScreen victoryScreen;
-		*/
-		// State
-		//GameState state = GameState::Menu;
 
 
 	};

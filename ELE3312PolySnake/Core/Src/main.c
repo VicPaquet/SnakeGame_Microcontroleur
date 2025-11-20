@@ -821,7 +821,7 @@ void HAL_SYSTICK_Callback(){
 //{
 //  return -1;
 //}
-///* USER CODE END 4 */
+/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -837,7 +837,6 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
 #ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number

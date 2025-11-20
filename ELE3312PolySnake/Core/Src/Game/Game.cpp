@@ -7,7 +7,9 @@
  */
 
 #include "Game/Game.h"
+#include "Game/Sections/MusicPlayer.h"
 #include "Game/Sections/SnakeGame.h"
+#include "interfaces/sound/Melodie.h"
 #include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/RGBLight/RGBLED.h"
 #include "NucleoImp/AnalogInput/ADCInput.h"
@@ -22,8 +24,11 @@ GPIOKeypad Game::keypad;
 RGBLED Game::rgbLed;
 UART Game::uart;
 
+
 SnakeGame Game::snakeGame;
-//DACSound Game::sound;
+DACSound Game::sound;
+MusicPlayer Game::musicPlayer;
+
 // Players
 //PlayerManager Game::players;
 // Game sections
@@ -38,6 +43,8 @@ VictoryScreen Game::victoryScreen;
 Ringbuffer Game::uartBuffer;
 uint8_t Game::buff[BUFFER_SIZE]= {0};
 
+
+
 Game::Game(){}
 
 /** @brief Constructor for the Game class.
@@ -47,9 +54,6 @@ Game::Game(){}
 
 void Game::setup(peripheral_handles *handles) {
 	 this->handles = handles;
-	 //sound.setup(handles->hdac, handles->htim_dac, 84000000UL);
-	 //distance.setup(3.0f, 27.0f, handles->htim_distance);
-
 	 motionInput.setup(handles->hi2c);
 	 snakeGame.setup(&display,&keypad, &uart, &motionInput);
 	 keypad.setup(handles->gpio_keypad);
@@ -57,101 +61,20 @@ void Game::setup(peripheral_handles *handles) {
 	 display.clearScreen();
 	 uart.setup(handles->huart, 5);
 
-	 uartBuffer.setup();
-	 /*
-	 display.setup(handles->hspi_tft);
-	 //rgbLed.setup(handles->htim_led, TIM_CHANNEL_2, TIM_CHANNEL_3, TIM_CHANNEL_4);
-	 //adcInput.setup(handles->hadc);
-	 display.clearScreen();
-	 keypad.setup(handles->gpio_keypad);
-	 // Game Parts
-	 //menu.setup(&display, &keypad, &uart, &rgbLed, &players);
-	 play.setup(&display, &motionInput); // &uart, &players
-	 //resultScreen.setup(&display, &uart, &players);
-	 //uartBuffer.setup(512);
-	 */
+	 adcInput.setup(handles->hadc);
+
+	 sound.setup(handles->hdac, handles->htim_dac, 84000000UL);
+	 musicPlayer.setup(&sound);
 }
 
-//extern volatile uint16_t game_delay;
-
 void Game::run(){
-	//uint8_t buff[BUFFER_SIZE]= {0};
-	//SerialFrame frame; // à implementer
+	HAL_Delay(100);
+	musicPlayer.playMelody(FRERE_JACQUES, 32);
+
 	while(1){
 		snakeGame.run();
-		HAL_Delay(10);
+		musicPlayer.update();
 	}
-		/*
-		// Check UART and dispatch messages
-		if (uartBuffer.read(buff, BUFFER_SIZE) != 0) {
-			frame.setMessage(buff, BUFFER_SIZE);
-
-			switch (frame.getMessageType()){
-				case MessageType::PlayerChoice:
-					if (state == GameState::Menu) { // Only dispatch messages for the current state
-						menu.handleRemote(frame.getPlayerChoiceMessage());
-					}
-					break;
-				case MessageType::Position :
-					if (state == GameState::Labyrinth) { // Only dispatch messages for the current state
-						labyrinth.handleRemote(frame.getLabyrinthMessage());
-					}
-					break;
-
-				case MessageType::PowerValue :
-					if (state == GameState::Combat) { // Only dispatch messages for the current state
-						combat.handleRemote(frame.getCombatMessage());
-					}
-					break;
-
-				default:
-					break;
-			}
-
-		}
-		*/
-/*
-		// Handle user input
-		switch(state){
-			case GameState::Menu:
-				keypad.update();
-				break;
-			case GameState::Play:
-				//play.handleUserInput();
-				break;
-
-			case GameState::VictoryScreen:
-				break;
-				*/
-		/*
-		// Update game
-		if (game_delay == 1) {
-			game_delay = 0;
-
-			switch(state){
-				case GameState::Menu:
-					if(menu.run()){
-						state = GameState::Labyrinth;
-					}
-					break;
-
-				case GameState::Combat:
-					if (play.run()) {
-						state = GameState::PlayScreen;
-					}
-					break;
-
-				case GameState::ResultScreen:
-					if (resultScreen.run()){
-						if (resultScreen.run()) {
-							state = GameState::ResultScreen;
-							}
-							break;
-					}
-					break;
-
-			}
-		}*/
 }
 
 

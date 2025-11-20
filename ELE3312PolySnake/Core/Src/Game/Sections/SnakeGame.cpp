@@ -293,7 +293,7 @@ bool SnakeGame::run() {
             state = SnakeGameState::Run;
             break;
         case SnakeGameState::Run:
-
+//
             // ====== RÉCEPTION DES MESSAGES UART ======
             if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
                 frame.setMessage(buff, BUFFER_SIZE);
@@ -309,11 +309,11 @@ bool SnakeGame::run() {
                         break;
                 }
             }
-
+//
             // ====== GESTION DU SERPENT LOCAL ======
             if (mySnake && mySnake->getLength() > 0) {
                 keypad->update();
-                
+
                 Direction inputDirection = Direction(keypad->getDirection());
                 if (inputDirection != Direction::UNKNOWN) {
 
@@ -337,10 +337,10 @@ bool SnakeGame::run() {
                         sendSnakeDirection();
                     }
                 }
-                
+
                 Rect oldTail = mySnake->getOldTail();
                 mySnake->move(0);
-                
+
                 // Vérifier collision avec fruit
                 bool ateFruit = checkFruitCollision();
                 if (ateFruit) {
@@ -368,9 +368,9 @@ bool SnakeGame::run() {
 
                 mySnake->draw();
             }
-
-
-            // ====== GESTION DU SERPENT ADVERSE ======
+//
+//
+//            // ====== GESTION DU SERPENT ADVERSE ======
             if (snakeOpponent && snakeOpponent->getLength() > 0) {
                 Rect oldTailOpponent = snakeOpponent->getOldTail();
                 snakeOpponent->move(0);
@@ -384,23 +384,23 @@ bool SnakeGame::run() {
                         checkboard->erasePosition(oldTailOpponent.getX1(), oldTailOpponent.getY1());
                     }
                 }
-                
+
                 snakeOpponent->draw();
             }
-
-            // ====== DESSINER LES FRUITS EN DERNIER ======
+//
+//            // ====== DESSINER LES FRUITS EN DERNIER ======
             const auto& fruits = getFruits();
             for (const auto& fruit : fruits) {
                 if (fruit->isActive()) {
                     fruit->draw();
                 }
             }
-            // ====== DÉLAI ======
-            uint32_t delay_ms = 120; // Même vitesse pour master et slave pour tester
-            HAL_Delay(delay_ms);
-//            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
-//            HAL_Delay(delay_ms);
-            break;
+//            // ====== DÉLAI ======
+           uint32_t delay_ms = 10; // Même vitesse pour master et slave pour tester
+           HAL_Delay(delay_ms);
+////            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
+////            HAL_Delay(delay_ms);
+           break;
     }
     return false;
 }
