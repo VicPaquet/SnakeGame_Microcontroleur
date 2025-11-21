@@ -11,7 +11,7 @@
   */
 
 #include "Interfaces/Keypad/Keypad.h"
-#include "Game/Graphics/GraphObjects/MySnake.h"
+#include "Resources/Direction.h"
 #include "main.h"
 
 

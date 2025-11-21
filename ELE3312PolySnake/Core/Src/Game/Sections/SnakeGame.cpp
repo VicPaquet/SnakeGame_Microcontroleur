@@ -280,6 +280,7 @@ void SnakeGame::handleRemoteAck(handShakeMessage msg) {
     switch(msg.getType()) {
         case MessageType::Ack:
         	setSeed(msg.getSeed());
+        	break;
         default:
         	break;
     }
@@ -396,7 +397,7 @@ bool SnakeGame::run() {
                 }
             }
 //            // ====== DÉLAI ======
-           uint32_t delay_ms = 10; // Même vitesse pour master et slave pour tester
+           uint32_t delay_ms = 120; // Même vitesse pour master et slave pour tester
            HAL_Delay(delay_ms);
 ////            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
 ////            HAL_Delay(delay_ms);

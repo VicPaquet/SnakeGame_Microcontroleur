@@ -49,13 +49,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/NucleoImp/Distance/HCSR04Distance.h \
  ../Core/Inc/Interfaces/Distance/Distance.h \
  ../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h \
- ../Core/Inc/Interfaces/Keypad/Keypad.h \
- ../Core/Inc/Game/Graphics/GraphObjects/MySnake.h \
- ../Core/Inc/Game/Graphics/GraphObjects.h \
- ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
- ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h \
- ../Core/Inc/Resources/spriteData.h \
- ../Core/Inc/Interfaces/Display/Sprite.h \
+ ../Core/Inc/Interfaces/Keypad/Keypad.h ../Core/Inc/Resources/Direction.h \
  ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h \
  ../Core/Inc/NucleoImp/MotionInput/mpu6050.h \
  ../Core/Inc/Interfaces/MotionInput/MotionInput.h \
@@ -65,7 +59,13 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/Game/ComMessages/SnakeGameMessage.h \
  ../Core/Inc/Interfaces/Communication/Message.h \
  ../Core/Inc/Game/Graphics/GraphObjects/Checkboard.h \
+ ../Core/Inc/Game/Graphics/GraphObjects.h \
+ ../Core/Inc/Interfaces/Display/Sprite.h \
  ../Core/Inc/Game/ComMessages/handShakeMessage.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/MySnake.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/Head.h \
+ ../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h \
+ ../Core/Inc/Resources/spriteData.h \
  ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h \
  ../Core/Inc/Interfaces/Communication/Communication.h \
  ../Core/Inc/NucleoImp/SerialCom/SerialFrame.h \
@@ -75,7 +75,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
  ../Core/Inc/Game/Sections/MusicPlayer.h \
  ../Core/Inc/Interfaces/Sound/Note.h \
  ../Core/Inc/NucleoImp/Sound/DACSound.h \
- ../Core/Inc/Interfaces/Sound/Sound.h
+ ../Core/Inc/Interfaces/Sound/Sound.h ../Core/Inc/Game/Sections/Menu.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -130,12 +130,7 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Interfaces/Distance/Distance.h:
 ../Core/Inc/NucleoImp/Keypad/GPIOKeypad.h:
 ../Core/Inc/Interfaces/Keypad/Keypad.h:
-../Core/Inc/Game/Graphics/GraphObjects/MySnake.h:
-../Core/Inc/Game/Graphics/GraphObjects.h:
-../Core/Inc/Game/Graphics/GraphObjects/Head.h:
-../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h:
-../Core/Inc/Resources/spriteData.h:
-../Core/Inc/Interfaces/Display/Sprite.h:
+../Core/Inc/Resources/Direction.h:
 ../Core/Inc/NucleoImp/MotionInput/MPU6050MotionInput.h:
 ../Core/Inc/NucleoImp/MotionInput/mpu6050.h:
 ../Core/Inc/Interfaces/MotionInput/MotionInput.h:
@@ -145,7 +140,13 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Game/ComMessages/SnakeGameMessage.h:
 ../Core/Inc/Interfaces/Communication/Message.h:
 ../Core/Inc/Game/Graphics/GraphObjects/Checkboard.h:
+../Core/Inc/Game/Graphics/GraphObjects.h:
+../Core/Inc/Interfaces/Display/Sprite.h:
 ../Core/Inc/Game/ComMessages/handShakeMessage.h:
+../Core/Inc/Game/Graphics/GraphObjects/MySnake.h:
+../Core/Inc/Game/Graphics/GraphObjects/Head.h:
+../Core/Inc/Game/Graphics/GraphObjects/BodyPart.h:
+../Core/Inc/Resources/spriteData.h:
 ../Core/Inc/Game/Graphics/GraphObjects/Fruit.h:
 ../Core/Inc/Interfaces/Communication/Communication.h:
 ../Core/Inc/NucleoImp/SerialCom/SerialFrame.h:
@@ -156,3 +157,4 @@ Core/Src/cpp_main.o: ../Core/Src/cpp_main.cpp ../Core/Inc/main.h \
 ../Core/Inc/Interfaces/Sound/Note.h:
 ../Core/Inc/NucleoImp/Sound/DACSound.h:
 ../Core/Inc/Interfaces/Sound/Sound.h:
+../Core/Inc/Game/Sections/Menu.h:

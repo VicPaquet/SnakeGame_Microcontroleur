@@ -4,7 +4,8 @@
 #include "Game/Graphics/GraphObjects.h"
 #include "Game/Graphics/GraphObjects/Head.h"
 #include "Game/Graphics/GraphObjects/BodyPart.h"
-#include "Resources/spriteData.h" // Pour les constantes COLOR_*
+#include "Resources/Direction.h"
+#include "Resources/spriteData.h"
 #include "Interfaces/Display/Sprite.h"
 #include "Interfaces/Display/Point.h"
 #include <cstdint>
@@ -13,14 +14,6 @@
 #include "NucleoImp/Keypad/GPIOKeypad.h"
 
 
-// Directions possibles pour le serpent
-enum class Direction {
-    NORTH = 0,
-    EAST = 1,
-    SOUTH = 2,
-    WEST = 3,
-	UNKNOWN = 4
-};
 
 class MySnake : public GraphObject {
 public:

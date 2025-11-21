@@ -10,8 +10,7 @@
   * @{
   */
 
-#include "Game/Graphics/GraphObjects/MySnake.h"
-
+#include "Resources/Direction.h"
 #include <cstdint>
 
 	/** Key codes for a number keypad

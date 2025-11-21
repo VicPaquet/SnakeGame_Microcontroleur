@@ -3,8 +3,8 @@ C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.external
 ../Core/Src/cpp_main.cpp:42:6:void handleUARTData(uint8_t*, uint16_t)	2
 ../Core/Src/cpp_main.cpp:54:6:void cpp_main(peripheral_handles*)	1
 ../Core/Src/cpp_main.cpp:59:1:void __static_initialization_and_destruction_0()	1
-../Core/Inc/Game/Game.h:61:11:Game::~Game()	1
-../Core/Inc/Game/Game.h:61:11:virtual Game::~Game()	1
+../Core/Inc/Game/Game.h:41:13:Game::~Game()	1
+../Core/Inc/Game/Game.h:41:13:virtual Game::~Game()	1
 ../Core/Src/cpp_main.cpp:59:1:void __static_initialization_and_destruction_1()	1
 ../Core/Src/cpp_main.cpp:59:1:cpp)	1
 ../Core/Src/cpp_main.cpp:59:1:cpp)	1
