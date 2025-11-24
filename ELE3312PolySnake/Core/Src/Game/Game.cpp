@@ -59,6 +59,10 @@ void Game::setup(peripheral_handles *handles) {
     menu.setup(&display, &keypad, &distance, &rgbLed);
     snakeGame.setup(&display, &keypad, &uart, &motionInput);
 
+
+    // Démarrer le timer d'input capture pour le capteur de distance
+    HAL_TIM_IC_Start_IT(handles->htim_distance, TIM_CHANNEL_1);
+
     // Activer la mesure de distance pour le menu
     distance.enableMeasurement();
 }
@@ -106,7 +110,7 @@ void Game::run() {
             }
 
             case GameState::ResultScreen: {
-                // TODO: Implémenter l'écran de résultats
+            	// À FAIRE PLUS TARD
                 // Pour l'instant, retour au menu
                 gameState = GameState::Menu;
                 distance.enableMeasurement();

@@ -42,7 +42,6 @@ void handleUART(uint8_t data) ;
 void handleUARTData(uint8_t *data, uint16_t size);
 void captureCallback(TIM_HandleTypeDef *htim);
 
-//void captureCallback(TIM_HandleTypeDef *htim);
 
 #ifdef __cplusplus
 }

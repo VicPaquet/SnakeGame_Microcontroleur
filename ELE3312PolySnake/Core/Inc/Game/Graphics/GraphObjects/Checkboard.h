@@ -22,7 +22,7 @@ struct Collision {
 
 class Checkboard : public GraphObject {
 public:
-	void setup(const Rect &rect, Display *disp, SnakeGame* game); //Add PlayerManager later
+	void setup(const Rect &rect, Display *disp, SnakeGame* game);
 	virtual ~Checkboard() = default;
 	void draw() override;
 	void clear() override;
