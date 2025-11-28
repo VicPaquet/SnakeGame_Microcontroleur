@@ -11,8 +11,8 @@
 #include "NucleoImp/SerialCom/SerialFrame.h"
 #include "NucleoImp/SerialCom/UART.h"
 #include "Game/ComMessages/SnakeGameMessage.h"
-#include "Game/Game.h" // Added include for the global Game::uartBuffer
-#include "Resources/spriteData.h" // Pour les constantes COLOR_*
+#include "Game/Game.h"
+#include "Resources/spriteData.h"
 
 
 SnakeGame::SnakeGame() :
@@ -21,6 +21,7 @@ SnakeGame::SnakeGame() :
     score(0),
     state(SnakeGameState::Initialization),
     is_master_(false),
+	isSinglePlayer_(false),
     seed_(0)
     {
 
@@ -70,7 +71,7 @@ void SnakeGame::sendSnakeDirection() {
 
     // Envoyer seulement la direction actuelle
     uint8_t direction = static_cast<uint8_t>(mySnake->getCurrentDirection());
-    SnakeGameMessage msg(0, 0, direction, cType); // x=0, y=0 car on n'en a plus besoin
+    SnakeGameMessage msg(0, 0, direction, cType);
     comm->send(&msg);
 }
 
@@ -115,25 +116,16 @@ void SnakeGame::updateOpponentSnake(uint8_t x, uint8_t y, Direction direction) {
         snakeOpponent->setDirection(direction);
         
         // Vérifier si le serpent adverse a mangé un fruit à la NOUVELLE position
-        bool ateFruit = checkFruitCollisionForSnake(snakeOpponent.get());
+        bool ateFruit = checkFruitCollision(snakeOpponent.get());
         
-        // **ORDRE CRITIQUE:**
-        // 1. setHeadPosition sauvegarde l'ancienne position et déplace la tête
         snakeOpponent->setHeadPosition(x, y);
 
-        // 2. Déplacer le corps OU ajouter un segment
+        // Déplacer le corps OU ajouter un segment
         if (ateFruit) {
-            // Ne pas déplacer le corps, juste ajouter un segment
-            // Le nouveau segment prend la position de l'ancienne tête
             snakeOpponent->addBodyPart();
         } else {
-            // Déplacer le corps pour suivre la tête
-            // Sauvegarder l'ancienne queue AVANT de bouger
             Rect oldTail = snakeOpponent->getOldTail();
-
             snakeOpponent->moveBodyOnly();
-
-            // Effacer l'ancienne position de la queue
             if (checkboard) {
                 uint16_t oldTailX = oldTail.getX1();
                 uint16_t oldTailY = oldTail.getY1();
@@ -150,39 +142,44 @@ void SnakeGame::updateOpponentSnake(uint8_t x, uint8_t y, Direction direction) {
         snakeOpponent->setDirection(direction);
     }
 }
-
 void SnakeGame::initialize() {
-    // Utiliser le seed synchronisé
     srand(seed_);
     
-    // Dessiner le checkboard
     if (newCheckboard && checkboard) {
         checkboard->draw();
         newCheckboard = false;
     }
     fruitEncountered = false;
 
-    // ====== INITIALISER LES DEUX SERPENTS DANS LE MÊME ORDRE ======
-
-    if (is_master_) {
-        // Master : mon serpent = vert, adverse = bleu
+    // ====== INITIALISER SELON LE MODE ======
+    if (isSinglePlayer_) {
+        // MODE SINGLEPLAYER : Un seul serpent
         if (mySnake) {
             mySnake->setColor(COLOR_GREEN, COLOR_DARKGREEN);
-            mySnake->initializeSnake(5, 5, Direction::EAST, 3);
+            mySnake->initializeSnake(16, 12, Direction::EAST, 3);  // Centre de l'écran
         }
-        if (snakeOpponent) {
-            snakeOpponent->setColor(COLOR_BLUE, COLOR_BLUE);
-            snakeOpponent->initializeSnake(26, 18, Direction::WEST, 3);
-        }
+        // Ne pas initialiser snakeOpponent
+
     } else {
-        // Slave : mon serpent = bleu, adverse = vert
-        if (snakeOpponent) {
-            snakeOpponent->setColor(COLOR_GREEN, COLOR_DARKGREEN);
-            snakeOpponent->initializeSnake(5, 5, Direction::EAST, 3);
-        }
-        if (mySnake) {
-            mySnake->setColor(COLOR_BLUE, COLOR_BLUE);
-            mySnake->initializeSnake(26, 18, Direction::WEST, 3);
+        // MODE MULTIPLAYER : Deux serpents
+        if (is_master_) {
+            if (mySnake) {
+                mySnake->setColor(COLOR_GREEN, COLOR_DARKGREEN);
+                mySnake->initializeSnake(5, 5, Direction::EAST, 3);
+            }
+            if (snakeOpponent) {
+                snakeOpponent->setColor(COLOR_BLUE, COLOR_BLUE);
+                snakeOpponent->initializeSnake(26, 18, Direction::WEST, 3);
+            }
+        } else {
+            if (snakeOpponent) {
+                snakeOpponent->setColor(COLOR_GREEN, COLOR_DARKGREEN);
+                snakeOpponent->initializeSnake(5, 5, Direction::EAST, 3);
+            }
+            if (mySnake) {
+                mySnake->setColor(COLOR_BLUE, COLOR_BLUE);
+                mySnake->initializeSnake(26, 18, Direction::WEST, 3);
+            }
         }
     }
 
@@ -197,12 +194,14 @@ void SnakeGame::initialize() {
     if (mySnake) {
         mySnake->draw();
     }
-    if (snakeOpponent) {
+
+    // Dessiner l'adversaire seulement en multijoueur
+    if (!isSinglePlayer_ && snakeOpponent) {
         snakeOpponent->draw();
     }
 
-    // Envoyer la direction initiale
-    if (mySnake) {
+    // Envoyer direction initiale seulement en multijoueur
+    if (!isSinglePlayer_ && mySnake) {
         sendSnakeDirection();
     }
 }
@@ -279,130 +278,162 @@ void SnakeGame::waitForSyncAndGetSeed() {
 void SnakeGame::handleRemoteAck(handShakeMessage msg) {
     switch(msg.getType()) {
         case MessageType::Ack:
-        	setSeed(msg.getSeed());
-        	break;
+            setSeed(msg.getSeed());
+            break;
+
         default:
-        	break;
+            break;
     }
 }
+
 
 bool SnakeGame::run() {
     switch(state) {
         case SnakeGameState::Initialization:
-            waitForSyncAndGetSeed();
+            // En mode multijoueur, attendre la synchro
+            if (!isSinglePlayer_) {
+                waitForSyncAndGetSeed();
+            }
+            // En singleplayer, seed déjà défini dans Game.cpp
+
             initialize();
             state = SnakeGameState::Run;
             break;
+
         case SnakeGameState::Run:
-//
-            // ====== RÉCEPTION DES MESSAGES UART ======
-            if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
-                frame.setMessage(buff, BUFFER_SIZE);
-                switch (frame.getMessageType()) {
-                    case MessageType::Position:
-                        handleRemoteSnakeGame(frame.getSnakeGameMessage());
-                        break;
-                    case MessageType::GameOver:
-                        // L'autre joueur a perdu, on redémarre aussi
-                        restart();
-                        return false; // Sortir de run() pour éviter de continuer
-                    default:
-                        break;
+            // ====== RÉCEPTION UART (SEULEMENT EN MULTIJOUEUR) ======
+            if (!isSinglePlayer_) {
+                if (Game::uartBuffer.read(buff, BUFFER_SIZE) != 0) {
+                    frame.setMessage(buff, BUFFER_SIZE);
+                    switch (frame.getMessageType()) {
+                        case MessageType::Position:
+                            handleRemoteSnakeGame(frame.getSnakeGameMessage());
+                            break;
+                        case MessageType::GameOver:
+                            restart();
+                            return false;
+                        default:
+                            break;
+                    }
                 }
             }
-//
+
             // ====== GESTION DU SERPENT LOCAL ======
             if (mySnake && mySnake->getLength() > 0) {
                 keypad->update();
 
                 Direction inputDirection = Direction(keypad->getDirection());
                 if (inputDirection != Direction::UNKNOWN) {
-
                     Direction oldDirection = mySnake->getCurrentDirection();
 
+                    // Empêcher demi-tour
                     if (inputDirection == Direction::NORTH && oldDirection == Direction::SOUTH) {
-						inputDirection = oldDirection; // Pas de changement
+                        inputDirection = oldDirection;
                     }
                     if (inputDirection == Direction::SOUTH && oldDirection == Direction::NORTH) {
-                    	inputDirection = oldDirection; // Pas de changement
+                        inputDirection = oldDirection;
                     }
                     if (inputDirection == Direction::EAST && oldDirection == Direction::WEST) {
-						inputDirection = oldDirection; // Pas de changement
-					}
+                        inputDirection = oldDirection;
+                    }
                     if (inputDirection == Direction::WEST && oldDirection == Direction::EAST) {
-						inputDirection = oldDirection; // Pas de changement
-					}
+                        inputDirection = oldDirection;
+                    }
+
                     mySnake->setDirection(inputDirection);
 
-                    if (inputDirection != oldDirection) {
+                    if (!isSinglePlayer_ && inputDirection != oldDirection) {
                         sendSnakeDirection();
                     }
                 }
 
                 Rect oldTail = mySnake->getOldTail();
-                mySnake->move(0);
 
-                // Vérifier collision avec fruit
-                bool ateFruit = checkFruitCollision();
-                if (ateFruit) {
-                    // Le fruit est déjà effacé par consume()
-                    mySnake->addBodyPart();
-                    generateNewFruit();
-                } else {
-                    // Effacer l'ancienne queue seulement si on n'a PAS mangé
-                    if (checkboard) {
-                        checkboard->erasePosition(oldTail.getX1(), oldTail.getY1());
-                    }
+                bool ateFruit = checkFruitCollision(mySnake.get());
+
+                // Bouger
+                mySnake->move(ateFruit ? 1 : 0);
+
+                // Effacer oldTail seulement si pas mangé
+                if (!ateFruit && checkboard) {
+                    checkboard->erasePositionPixels(oldTail.getX1(), oldTail.getY1());
                 }
+
+                // Générer fruit
+                if (ateFruit) {
+                    generateNewFruit();
+                }
+
+                // Dessiner une seule fois
+                mySnake->draw();
+
+                BodyPart lastPart = (mySnake->getBody()).back();
+                mySnake->setOldTail(lastPart.getRect());
 
                 // Vérifier collisions mortelles
-                if (checkWallCollision() || checkSelfCollision() || checkOpponentCollision()) {
-                    // Envoyer Game Over à l'autre microcontrôleur
-                    SnakeGameMessage gameOverMsg(0, 0, 0, CollisionType::None);
-                    gameOverMsg.setType(MessageType::GameOver);
-                    comm->send(&gameOverMsg);
+                bool collision = checkWallCollision() || checkSelfCollision();
 
-                    // Redémarrer localement
-                    restart();
-                    return false; // Sortir pour éviter de continuer la frame
+                if (!isSinglePlayer_) {
+                    collision = collision || checkOpponentCollision(); // Si multiplayer on regarde aussi collision avec ennemie
                 }
 
+                if (collision) {
+                    if (!isSinglePlayer_) {// On envoie message comme quoi il y a une collision avec un mur
+                        SnakeGameMessage gameOverMsg(0, 0, 0, CollisionType::None);
+                        gameOverMsg.setType(MessageType::GameOver);
+                        comm->send(&gameOverMsg);
+                    }
+                    restart();
+                    return false;
+                }
+
+                // Redessiner le serpent
                 mySnake->draw();
             }
-//
-//
-//            // ====== GESTION DU SERPENT ADVERSE ======
-            if (snakeOpponent && snakeOpponent->getLength() > 0) {
-                Rect oldTailOpponent = snakeOpponent->getOldTail();
-                snakeOpponent->move(0);
 
-                bool ateFruitOpponent = checkFruitCollisionForSnake(snakeOpponent.get());
+            // ====== GESTION SERPENT ADVERSE (SEULEMENT EN MULTIJOUEUR) ======
+            if (!isSinglePlayer_ && snakeOpponent && snakeOpponent->getLength() > 0) {
+                // Vérifier collision AVANT de bouger
+                bool ateFruitOpponent = checkFruitCollision(snakeOpponent.get());
+
+                // Déplacer avec le bon paramètre
+                snakeOpponent->move(ateFruitOpponent ? 1 : 0);
+
                 if (ateFruitOpponent) {
-                    snakeOpponent->addBodyPart();
-
+                    generateNewFruit();
                 } else {
+                    // Effacer l'ancienne queue
+                    Rect oldTailOpponent = snakeOpponent->getOldTail();
+                    uint16_t gridXOpp = oldTailOpponent.getX1() / 10;
+                    uint16_t gridYOpp = oldTailOpponent.getY1() / 10;
+
                     if (checkboard) {
-                        checkboard->erasePosition(oldTailOpponent.getX1(), oldTailOpponent.getY1());
+                        checkboard->erasePosition(gridXOpp, gridYOpp);
                     }
                 }
 
                 snakeOpponent->draw();
             }
-//
-//            // ====== DESSINER LES FRUITS EN DERNIER ======
+
+            // ====== DESSINER LES FRUITS ======
             const auto& fruits = getFruits();
             for (const auto& fruit : fruits) {
                 if (fruit->isActive()) {
                     fruit->draw();
                 }
             }
-//            // ====== DÉLAI ======
-           uint32_t delay_ms = 120; // Même vitesse pour master et slave pour tester
-           HAL_Delay(delay_ms);
-////            uint32_t delay_ms = is_master_ ? computeDelayFromAccel(motionInput) : 120;
-////            HAL_Delay(delay_ms);
-           break;
-    }
+
+            // ====== DÉLAI ======
+            if (isSinglePlayer_){
+            	uint32_t delay_ms = computeDelayFromAccel(motionInput);
+            	HAL_Delay(delay_ms);
+            }
+            else{
+            	uint32_t delay_ms = 160; // Si multiplayer on ne met pas accel
+            	HAL_Delay(delay_ms);
+            }
+            break;
+    	}
     return false;
 }
 
@@ -472,46 +503,25 @@ void SnakeGame::initializeFruits() {
     }
 }
 
-void SnakeGame::moveSnake(int eat) {
-    if (!mySnake) return;
 
-    // Faire avancer le serpent: cela bouge le mySnake dans le vecteurs (update le vecteur)
-    mySnake->move(eat);
-
-    if (checkFruitCollision()) {
-        mySnake->move(1); // eat = 1 pour faire grandir le serpent si on a collision avec un fruit
-        score += 10;      // Pas encore de logique de pointage, peut être utile pour la suite
-        generateNewFruit();
-        MySnake* snake = this->getMySnake();
-        if (snake) {
-            snake->draw();
-        }
-    }
-
-    if (checkWallCollision() || checkSelfCollision() || checkOpponentCollision()) {
-        // Game over
-        restart();
-    }
-}
-
-bool SnakeGame::checkFruitCollisionForSnake(MySnake* snake) {
-    if (!snake) return false;
-
-    uint16_t headX = snake->getHeadX();
-    uint16_t headY = snake->getHeadY();
-
-    for (auto it = fruits.begin(); it != fruits.end(); ++it) {
-        auto& fruit = *it;
-
-        if (fruit->isActive() && fruit->isAtPosition(headX, headY)) {
-            fruit->consume();
-            fruits.erase(it);
-            return true;
-        }
-    }
-
-    return false;
-}
+//bool SnakeGame::checkFruitCollisionOponnent(MySnake* snake) {
+//    if (!snake) return false;
+//
+//    uint16_t headX = snake->getHeadX();
+//    uint16_t headY = snake->getHeadY();
+//
+//    for (auto it = fruits.begin(); it != fruits.end(); ++it) {
+//        auto& fruit = *it;
+//
+//        if (fruit->isActive() && fruit->isAtPosition(headX, headY)) {
+//            fruit->consume();
+//            fruits.erase(it);
+//            return true;
+//        }
+//    }
+//
+//    return false;
+//}
 
 void SnakeGame::turnSnakeLeft() {
     if (mySnake) {
@@ -536,19 +546,19 @@ void SnakeGame::generateNewFruit(){
     fruits.push_back(std::move(fruit));
 }
 
-bool SnakeGame::checkFruitCollision() {
-    if (!mySnake) return false;
+bool SnakeGame::checkFruitCollision(MySnake* snake) {
+    if (!snake) return false;
 
-    uint16_t headX = mySnake->getHeadX();
-    uint16_t headY = mySnake->getHeadY();
+    uint16_t headX = snake->getHeadX();
+    uint16_t headY = snake->getHeadY();
 
     for (auto it = fruits.begin(); it != fruits.end(); ++it) {
         auto& fruit = *it;
 
         if (fruit->isActive() && fruit->isAtPosition(headX, headY)) {
-            fruit->consume();
 
-            // Supprimer du vecteur
+            // Juste désactiver et supprimer
+        	fruit->consume();
             fruits.erase(it);
             return true;
         }

@@ -66,11 +66,9 @@ void Game::setup(peripheral_handles *handles) {
     // Activer la mesure de distance pour le menu
     distance.enableMeasurement();
 }
-
 void Game::run() {
     HAL_Delay(100);
 
-    // Démarrer le timer d'interruption pour l'audio (TIM7)
     extern TIM_HandleTypeDef htim7;
     HAL_TIM_Base_Start_IT(&htim7);
 
@@ -79,49 +77,44 @@ void Game::run() {
     while(1) {
         switch(gameState) {
             case GameState::Menu: {
-                // Exécuter le menu
                 bool menuDone = menu.run();
 
                 if (menuDone) {
-                    // Désactiver la mesure de distance (optionnel, pour économiser)
                     distance.disableMeasurement();
 
-                    // Configurer le mode de jeu selon le choix
-                    if (menu.choiceMultiPlayer()) {
-                        // Mode multijoueur
-                        // Le SnakeGame gérera la synchro dans waitForSyncAndGetSeed()
-                    } else {
-                        // Mode singleplayer
-                        // On peut définir is_master à true et utiliser un seed local
+                    // ===== CONFIGURATION SELON LE CHOIX =====
+                    if (menu.choiceSinglePlayer()) {
+                        // MODE SINGLEPLAYER
+                        snakeGame.setSinglePlayer(true);
                         snakeGame.setIsMaster(true);
                         snakeGame.setSeed(HAL_GetTick());
+                    } else {
+                        // MODE MULTIPLAYER
+                        snakeGame.setSinglePlayer(false);
+                        // is_master et seed seront définis dans waitForSyncAndGetSeed()
                     }
 
-                    // Passer à l'état Play
                     gameState = GameState::Play;
                 }
                 break;
             }
 
             case GameState::Play: {
-                // Exécuter le jeu
                 snakeGame.run();
                 break;
             }
 
             case GameState::ResultScreen: {
-            	// À FAIRE PLUS TARD
-                // Pour l'instant, retour au menu
                 gameState = GameState::Menu;
                 distance.enableMeasurement();
                 break;
             }
         }
 
-        // Mettre à jour la musique
         musicPlayer.update();
     }
 }
+
 
 /** @brief Method that takes data provided by the uart interrupt.
   * @details The received data is stored internally and complete messages are

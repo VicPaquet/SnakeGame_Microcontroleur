@@ -70,6 +70,8 @@ public:
     Keypad* getKeypad() const   { return keypad; }
     int getFruitCount() const 	{ return fruit_count; }
     Head* getHead() const	    { return mySnake ? mySnake->getHead() : nullptr; }
+    bool isSinglePlayer() const { return isSinglePlayer_; }
+    void setSinglePlayer(bool isSingle) { isSinglePlayer_ = isSingle; }
 
     const std::vector<std::unique_ptr<Fruit>>& getFruits() const { return fruits; }
     const std::vector<BodyPart>& getBody() const { 
@@ -85,13 +87,13 @@ public:
 	void initializeFruits();
 	
 	// Méthodes de contrôle du serpent
-	void moveSnake(int eat = 0);  // Faire avancer le serpent
+
 	void turnSnakeLeft();         // Tourner à gauche
 	void turnSnakeRight();        // Tourner à droite
 	
 	// Méthodes de jeu
-	bool checkFruitCollision();   // Vérifier collision avec fruits
-	bool checkFruitCollisionForSnake(MySnake* snake); // Vérifier collision avec fruits pour un serpent spécifique
+	bool checkFruitCollision(MySnake* snake);   // Vérifier collision avec fruits
+	//bool checkFruitCollisionOponnent(MySnake* snake); // Vérifier collision avec fruits pour un serpent spécifique
 	bool checkWallCollision();    // Vérifier collision avec murs
 	bool checkSelfCollision();    // Vérifier collision avec le corps
 
@@ -126,6 +128,7 @@ private:
     // Ajout du serpent adversaire
     std::unique_ptr<MySnake> snakeOpponent;
     bool is_master_;  // Indique si ce microcontrôleur est le maître
+    bool isSinglePlayer_;
 
     uint32_t seed_;
 

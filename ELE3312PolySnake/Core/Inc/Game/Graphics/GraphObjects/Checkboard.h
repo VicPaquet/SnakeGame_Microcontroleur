@@ -23,6 +23,7 @@ struct Collision {
 class Checkboard : public GraphObject {
 public:
 	void setup(const Rect &rect, Display *disp, SnakeGame* game);
+	void erasePositionPixels(uint16_t pixelX, uint16_t pixelY);
 	virtual ~Checkboard() = default;
 	void draw() override;
 	void clear() override;

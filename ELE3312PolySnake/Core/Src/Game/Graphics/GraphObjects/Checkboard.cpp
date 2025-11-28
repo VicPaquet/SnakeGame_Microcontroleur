@@ -76,6 +76,16 @@ bool Checkboard::isReady(){
 	return ready;
 }
 
+void Checkboard::erasePositionPixels(uint16_t pixelX, uint16_t pixelY) {
+    if (!disp) return;
+
+    // Les coordonnées sont déjà en pixels, pas besoin de conversion
+    Sprite* sprite = getSpriteAt(Point(pixelX, pixelY));
+    if (sprite) {
+        drawSprite(pixelX, pixelY, sprite);
+    }
+}
+
 void Checkboard::draw(){
 	// Utiliser les dimensions fixes 32x24 pour correspondre à checkboardData
 	uint16_t hTiles = 32;
@@ -127,8 +137,12 @@ void Checkboard::update(){
     this->drawSprite(X1, Y1, sprite);
 }
 
-void Checkboard::erasePosition(uint16_t pixelX, uint16_t pixelY) {
+void Checkboard::erasePosition(uint16_t gridX, uint16_t gridY) {
     if (!disp) return;
+
+    // Convertir les coordonnées de grille en pixels
+    uint16_t pixelX = toScreenX(gridX);
+    uint16_t pixelY = toScreenY(gridY);
 
     Sprite* sprite = getSpriteAt(Point(pixelX, pixelY));
     if (sprite) {

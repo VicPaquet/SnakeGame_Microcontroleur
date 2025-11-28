@@ -65,6 +65,7 @@ public:
     void addBodyPart();
 
 private:
+    bool justAte_ = false;
     Direction currentDirection; // Direction courante
     uint16_t primaryColor_ = COLOR_GREEN;   // Couleur principale (remplace COLOR_GREEN)
     uint16_t secondaryColor_ = COLOR_DARKGREEN; // Couleur secondaire (remplace COLOR_DARKGREEN)
