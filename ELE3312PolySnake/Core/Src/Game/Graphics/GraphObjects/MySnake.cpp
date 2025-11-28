@@ -81,18 +81,41 @@ void MySnake::initializeSnake(uint16_t startX, uint16_t startY, Direction startD
 void MySnake::move(int eat) {
     if (!head || !disp) return;
 
-    // Sauvegarder oldTail AVANT tout mouvement
+    // 1. Sauvegarder l'ancienne position de la queue (pour l'effacer après)
+    Rect oldTail;
     if (!body.empty()) {
-        Rect oldTail = body[body.size() - 1].getRect();
+        oldTail = body.back().getRect();
+        this->setOldTail(oldTail);
+    } else {
+        // Si pas de corps, l'ancienne queue est la tête actuelle
+        oldTail = head->getRect();
         this->setOldTail(oldTail);
     }
 
+    // 2. Sauvegarder l'ancienne position de la tête
+    Rect oldHead = head->getRect();
+
+    // 3. Déplacer la tête
     moveHead(currentDirection);
-    
+
+    // 4. Déplacer chaque body part (chacun prend la position du précédent)
+    if (!body.empty()) {
+        // Déplacer de la queue vers la tête
+        for (int i = body.size() - 1; i > 0; i--) {
+            Rect prevRect = body[i-1].getRect();
+            body[i].setPosition(prevRect.getX1(), prevRect.getY1());
+        }
+
+        // Le premier body part prend la position de l'ancienne tête
+        body[0].setPosition(oldHead.getX1(), oldHead.getY1());
+    }
+
+    // 5. Si on a mangé, ajouter un body part à l'ancienne position de la queue
     if (eat != 0) {
-        addBodyPart();  // Ajouter à l'ancienne tête
-    } else {
-        moveBody();     // Déplacer normalement
+        Rect bodyRect(oldTail.getX1(), oldTail.getY1(),
+                      oldTail.getX1() + 10, oldTail.getY1() + 10);
+        BodyPart bodyPart(disp, bodyRect);
+        body.push_back(bodyPart);
     }
 }
 
@@ -258,12 +281,9 @@ void MySnake::setColor(uint16_t primaryColor, uint16_t secondaryColor) {
 void MySnake::moveHead(Direction direction) {
     if (!head || !disp) return;
     
+    // Position actuelle en grille
     uint16_t currentX = getHeadX();
     uint16_t currentY = getHeadY();
-
-    uint16_t oldPixelX = head->getRect().getX1();
-    uint16_t oldPixelY = head->getRect().getY1();
-    head->setOldHead(oldPixelX, oldPixelY);
 
     uint16_t newX = currentX;
     uint16_t newY = currentY;

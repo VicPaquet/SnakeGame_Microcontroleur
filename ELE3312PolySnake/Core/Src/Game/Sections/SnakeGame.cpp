@@ -327,16 +327,10 @@ bool SnakeGame::run() {
                     Direction oldDirection = mySnake->getCurrentDirection();
 
                     // Empêcher demi-tour
-                    if (inputDirection == Direction::NORTH && oldDirection == Direction::SOUTH) {
-                        inputDirection = oldDirection;
-                    }
-                    if (inputDirection == Direction::SOUTH && oldDirection == Direction::NORTH) {
-                        inputDirection = oldDirection;
-                    }
-                    if (inputDirection == Direction::EAST && oldDirection == Direction::WEST) {
-                        inputDirection = oldDirection;
-                    }
-                    if (inputDirection == Direction::WEST && oldDirection == Direction::EAST) {
+                    if ((inputDirection == Direction::NORTH && oldDirection == Direction::SOUTH) ||
+                        (inputDirection == Direction::SOUTH && oldDirection == Direction::NORTH) ||
+                        (inputDirection == Direction::EAST && oldDirection == Direction::WEST) ||
+                        (inputDirection == Direction::WEST && oldDirection == Direction::EAST)) {
                         inputDirection = oldDirection;
                     }
 
@@ -347,38 +341,36 @@ bool SnakeGame::run() {
                     }
                 }
 
+                // 1. Sauvegarder oldTail AVANT de bouger
                 Rect oldTail = mySnake->getOldTail();
 
+                // 2. Vérifier collision avec fruit AVANT de bouger
                 bool ateFruit = checkFruitCollision(mySnake.get());
 
-                // Bouger
+                // 3. Bouger le serpent (eat=1 si on a mangé, 0 sinon)
                 mySnake->move(ateFruit ? 1 : 0);
 
-                // Effacer oldTail seulement si pas mangé
-                if (!ateFruit && checkboard) {
-                    checkboard->erasePositionPixels(oldTail.getX1(), oldTail.getY1());
-                }
 
-                // Générer fruit
+                checkboard->erasePositionPixels(oldTail.getX1(), oldTail.getY1());
+
+
+                // 5. Générer nouveau fruit si on a mangé
                 if (ateFruit) {
                     generateNewFruit();
                 }
 
-                // Dessiner une seule fois
+                // 6. Dessiner le serpent UNE SEULE FOIS
                 mySnake->draw();
 
-                BodyPart lastPart = (mySnake->getBody()).back();
-                mySnake->setOldTail(lastPart.getRect());
-
-                // Vérifier collisions mortelles
+                // 7. Vérifier collisions mortelles
                 bool collision = checkWallCollision() || checkSelfCollision();
 
                 if (!isSinglePlayer_) {
-                    collision = collision || checkOpponentCollision(); // Si multiplayer on regarde aussi collision avec ennemie
+                    collision = collision || checkOpponentCollision();
                 }
 
                 if (collision) {
-                    if (!isSinglePlayer_) {// On envoie message comme quoi il y a une collision avec un mur
+                    if (!isSinglePlayer_) {
                         SnakeGameMessage gameOverMsg(0, 0, 0, CollisionType::None);
                         gameOverMsg.setType(MessageType::GameOver);
                         comm->send(&gameOverMsg);
@@ -386,30 +378,27 @@ bool SnakeGame::run() {
                     restart();
                     return false;
                 }
-
-                // Redessiner le serpent
-                mySnake->draw();
             }
+
 
             // ====== GESTION SERPENT ADVERSE (SEULEMENT EN MULTIJOUEUR) ======
             if (!isSinglePlayer_ && snakeOpponent && snakeOpponent->getLength() > 0) {
+                // Sauvegarder oldTail
+                Rect oldTailOpponent = snakeOpponent->getOldTail();
+
                 // Vérifier collision AVANT de bouger
                 bool ateFruitOpponent = checkFruitCollision(snakeOpponent.get());
 
-                // Déplacer avec le bon paramètre
+                // Déplacer
                 snakeOpponent->move(ateFruitOpponent ? 1 : 0);
 
+
+                checkboard->erasePositionPixels(oldTailOpponent.getX1(), oldTailOpponent.getY1());
+
+
+                // Générer fruit si mangé
                 if (ateFruitOpponent) {
                     generateNewFruit();
-                } else {
-                    // Effacer l'ancienne queue
-                    Rect oldTailOpponent = snakeOpponent->getOldTail();
-                    uint16_t gridXOpp = oldTailOpponent.getX1() / 10;
-                    uint16_t gridYOpp = oldTailOpponent.getY1() / 10;
-
-                    if (checkboard) {
-                        checkboard->erasePosition(gridXOpp, gridYOpp);
-                    }
                 }
 
                 snakeOpponent->draw();
@@ -496,7 +485,7 @@ void SnakeGame::initializeSnake() {
 void SnakeGame::initializeFruits() {
     // Vider les fruits existants s'il y en a
     fruits.clear();
-    fruit_count = randomRange(1, MAX_FRUITS); // Entre 1 et 10 fruits
+    fruit_count = 4;
 
     for (int i = 0; i < fruit_count; i++) {
     	generateNewFruit();
